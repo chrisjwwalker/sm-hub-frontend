@@ -1,5 +1,5 @@
 # Routes
-# This file defines all application routes (Higher priority routes first)
+# This file defines all application app.routes (Higher priority app.routes first)
 # ~~~~
 
 # Home page
