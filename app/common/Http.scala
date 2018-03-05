@@ -14,18 +14,22 @@
  * limitations under the License.
  */
 
-val appName = "sm-hub-frontend"
+package common
 
-lazy val frontend = Project(appName, file("."))
-  .enablePlugins(PlayScala)
-  .settings(PlayKeys.playDefaultPort := 1024)
-  .settings(
-    scalaVersion        :=  "2.11.11",
-    resolvers           +=  "scalaz-bintray" at "https://dl.bintray.com/scalaz/releases",
-    libraryDependencies ++= Seq(
-      ws,
-      "org.scalatestplus.play" %% "scalatestplus-play" % "2.0.1"  % Test,
-      "org.jsoup"              %  "jsoup"              % "1.11.1" % Test,
-      "org.mockito"            %  "mockito-core"       % "2.13.0" % Test
-    )
-  )
+import javax.inject.Inject
+
+import play.api.libs.ws.{WSClient, WSResponse}
+
+import scala.concurrent.Future
+
+class DefaultHttp @Inject()(val wsClient: WSClient) extends Http
+
+trait Http {
+  val wsClient: WSClient
+
+  def get(url: String): Future[WSResponse] = {
+    wsClient
+      .url(url)
+      .get()
+  }
+}

@@ -1,0 +1,38 @@
+@import views.html.templates.main_template
+@import views.html.components.SideBar
+
+@import common.RunningResponse
+
+@(profile: String, services: Seq[String])()
+
+@main_template(title = "SM Hub") {
+    <div class="top-block-single">
+        <div class="container">
+            <div class="row">
+                <div class="col-md-3">
+                @SideBar()
+                </div>
+
+                <div class="col-md-9">
+                    <h2>Services in the @profile profile</h2>
+                    <hr>
+                    <div class="row">
+                    @if(services.nonEmpty) {
+                        @for(service <- services) {
+                            <div class="col-md-6">
+                                <div class="alert alert-info text-center lead">
+                                    <a href="@routes.MainController.detailsForService(service)">
+                                        <strong>@service</strong>
+                                    </a>
+                                </div>
+                            </div>
+                        }
+                    } else {
+                        <p class="text-center lead">Currently, there are no sm profiles</p>
+                    }
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+}

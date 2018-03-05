@@ -1,0 +1,23 @@
+@import common.{GreenResponse, AmberResponse, RedResponse, RunningResponse}
+
+@(serviceName: String, runningStatus: RunningResponse)
+
+@evaluateResponse() = {
+    @runningStatus match {
+        case GreenResponse => {
+            alert-success
+        }
+        case RedResponse => {
+            alert-danger
+        }
+        case AmberResponse => {
+            alert-warn
+        }
+    }
+}
+
+<div class="col-md-4">
+    <div class="alert @evaluateResponse()" role="alert">
+        <p class="text-center"><strong>@serviceName</strong></p>
+    </div>
+</div>

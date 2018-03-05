@@ -1,0 +1,44 @@
+@import views.html.templates.main_template
+@import views.html.components.{RunningServiceDisplay, SideBar}
+
+@import common.RunningResponse
+
+@(apps: Seq[(String, RunningResponse)], form: Form[String])()
+
+@main_template(title = "SM Hub") {
+    <div class="top-block-single">
+        <div class="container">
+            <div class="row">
+                <div class="col-md-3">
+                @SideBar()
+                </div>
+
+                <div class="col-md-9">
+                    <h2>Running applications</h2>
+                    <hr>
+                    <form class="form-inline" action="@routes.MainController.submitHome()" method="post">
+                        <div class="form-group">
+                            <div class="input-group">
+                                <span class="input-group-addon" id="sizing-addon1">SM Profile</span>
+                                <input id="profile" name="profile" type="text" class="form-control" aria-describedby="sizing-addon1" value="@form("profile").value">
+                            </div>
+                        </div>
+                        <button type="submit" class="btn btn-primary"><span class="glyphicon glyphicon-play" aria-hidden="true"></span> Search</button>
+                    </form>
+                    <hr>
+                    <div class="row">
+                    @if(apps.nonEmpty) {
+                        @for((service, resp) <- apps) {
+                            @RunningServiceDisplay(service, resp)
+                        }
+                    } else {
+                        <div class="col-md-12">
+                            <p class="text-center lead">Please search for a profile to view running services</p>
+                        </div>
+                    }
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+}

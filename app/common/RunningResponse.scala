@@ -14,18 +14,9 @@
  * limitations under the License.
  */
 
-val appName = "sm-hub-frontend"
+package common
 
-lazy val frontend = Project(appName, file("."))
-  .enablePlugins(PlayScala)
-  .settings(PlayKeys.playDefaultPort := 1024)
-  .settings(
-    scalaVersion        :=  "2.11.11",
-    resolvers           +=  "scalaz-bintray" at "https://dl.bintray.com/scalaz/releases",
-    libraryDependencies ++= Seq(
-      ws,
-      "org.scalatestplus.play" %% "scalatestplus-play" % "2.0.1"  % Test,
-      "org.jsoup"              %  "jsoup"              % "1.11.1" % Test,
-      "org.mockito"            %  "mockito-core"       % "2.13.0" % Test
-    )
-  )
+sealed trait RunningResponse
+case object GreenResponse extends RunningResponse
+case object AmberResponse extends RunningResponse
+case object RedResponse   extends RunningResponse

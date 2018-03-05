@@ -1,0 +1,65 @@
+@import views.html.templates.main_template
+@import views.html.components.SideBar
+
+@import common.RunningResponse
+
+@import play.api.libs.json.JsObject
+@(details: JsObject)()
+
+@main_template(title = "SM Hub") {
+    <div class="top-block-single">
+        <div class="container">
+            <div class="row">
+                <div class="col-md-3">
+                @SideBar()
+                </div>
+
+                <div class="col-md-9">
+                    <h2>Service details for @{details.\("name").as[String]}</h2>
+                    <hr>
+                    <div class="row">
+                        <div class="table-responsive">
+                            <table class="table table-striped">
+                                <tr>
+                                    <td>Service template</td>
+                                    <td>@{details.\("template").as[String]}</td>
+                                </tr>
+                                @if(details.\("frontend").asOpt[Boolean].isDefined) {
+                                    <tr>
+                                        <td>Frontend</td>
+                                        <td>@{details.\("frontend").as[Boolean]}</td>
+                                    </tr>
+                                }
+                                <tr>
+                                    <td>Default port</td>
+                                    <td>@{details.\("defaultPort").as[Int]}</td>
+                                </tr>
+                                <tr>
+                                    <td>Url</td>
+                                    <td>http://localhost:@{details.\("defaultPort").as[Int]}@{details.\("location").as[String]}</td>
+                                </tr>
+                                <tr>
+                                    <td>Github clone link</td>
+                                    <td>@{details.\("sources").\("repo").as[String]}</td>
+                                </tr>
+                                <tr>
+                                    <td>Parameters</td>
+                                    <td>
+                                        @for(param <- details.\("binary").\("cmd").as[Seq[String]]) {
+                                            <p>@param</p>
+                                        }
+                                        @if(details.\("sources").\("extra_params").asOpt[Seq[String]].isDefined) {
+                                            @for(param <- details.\("sources").\("extra_params").as[Seq[String]]) {
+                                                <p>@param</p>
+                                            }
+                                        }
+                                    </td>
+                                </tr>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+}

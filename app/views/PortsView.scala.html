@@ -1,0 +1,51 @@
+@import views.html.templates.main_template
+@import views.html.components.SideBar
+
+@import common.RunningResponse
+
+@(ports: Seq[Int], form: Form[(Int, Int)])()
+
+@main_template(title = "SM Hub") {
+    <div class="top-block-single">
+        <div class="container">
+            <div class="row">
+                <div class="col-md-3">
+                @SideBar()
+                </div>
+
+                <div class="col-md-9">
+                    <h2>Available ports</h2>
+                    <hr>
+                    <form class="form-inline" action="" method="post">
+                        <div class="form-group">
+                            <div class="input-group">
+                                <span class="input-group-addon" id="sizing-addon1">Start port</span>
+                                <input id="startPort" name="startPort" type="text" class="form-control" aria-describedby="sizing-addon1" value="@form("startPort").value">
+                            </div>
+
+                            <div class="input-group">
+                                <span class="input-group-addon" id="sizing-addon1">End port</span>
+                                <input id="endPort" name="endPort" type="text" class="form-control" aria-describedby="sizing-addon1" value="@form("endPort").value">
+                            </div>
+                        </div>
+                        <button type="submit" class="btn btn-primary"><span class="glyphicon glyphicon-plane" aria-hidden="true"></span> Search</button>
+                    </form>
+                    <hr>
+                    <div class="row">
+                    @if(ports.nonEmpty) {
+                        @for(port <- ports) {
+                            <div class="col-md-2">
+                                <div class="alert alert-info" role="alert">
+                                    <p class="text-center lead"><strong>@port</strong></p>
+                                </div>
+                            </div>
+                        }
+                    } else {
+                        <p class="text-center lead">Please search for a port range</p>
+                    }
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+}

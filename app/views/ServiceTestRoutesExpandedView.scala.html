@@ -1,0 +1,53 @@
+@import views.html.templates.main_template
+@import views.html.components.SideBar
+
+@import common.RunningResponse
+
+@(service: String, servicesTestRoutes: Option[Seq[TestRoutesDesc]])()
+
+@main_template(title = "SM Hub") {
+    <div class="top-block-single">
+        <div class="container">
+            <div class="row">
+                <div class="col-md-3">
+                @SideBar()
+                </div>
+
+                <div class="col-md-9">
+                    <h2>Test routes for @service</h2>
+                    <hr>
+                    <div class="row">
+                        @if(servicesTestRoutes.nonEmpty) {
+                            <div class="table-responsive">
+                            @for(testRoute <- servicesTestRoutes.get) {
+                                <table class="table table-striped">
+                                    <thead>
+                                        <tr>
+                                            <th>@testRoute.name</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr>
+                                            <td>Description</td>
+                                            <td>@testRoute.description</td>
+                                        </tr>
+
+                                        <tr>
+                                            <td>Test route</td>
+                                            <td>
+                                                <a href="@testRoute.route">@testRoute.route</a>
+                                            </td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            }
+                            </div>
+                        } else {
+                            <p class="text-center lead">Currently, there are no defined test routes for @service</p>
+                        }
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+}

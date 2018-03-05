@@ -1,0 +1,56 @@
+@import views.html.templates.main_template
+@import views.html.components.SideBar
+
+@import common.RunningResponse
+
+@(potentialProblems: Map[Int, Seq[String]])()
+
+@main_template(title = "SM Hub") {
+    <div class="top-block-single">
+        <div class="container">
+            <div class="row">
+                <div class="col-md-3">
+                @SideBar()
+                </div>
+
+                <div class="col-md-9">
+                    <h2>Potential conflicts</h2>
+                    <hr>
+                    <p class="text-center">
+                        These sets of services share the same port and could run into problems if they are ran at the same time</p>
+                    <hr>
+                    <div class="row">
+                        @if(potentialProblems.nonEmpty) {
+                            <div class="table-responsive">
+                                <table class="table table-striped">
+                                    <thead>
+                                        <tr>
+                                            <th>Port</th>
+                                            <th>Services</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                    @for((port, services) <- potentialProblems) {
+                                        <tr>
+                                            <td>@port</td>
+                                            <td>
+                                            @for((service, index) <- services.zipWithIndex) {
+                                                @service  @if(index != services.size - 1) { <strong>-</strong> }
+                                            }
+                                            </td>
+                                        </tr>
+                                    }
+                                    </tbody>
+                                </table>
+                            </div>
+                        } else {
+                            <div class="col-md-12">
+                                <p class="text-center lead">There are no current potential problems in sm config</p>
+                            </div>
+                        }
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+}
