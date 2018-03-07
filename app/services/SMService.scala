@@ -35,7 +35,7 @@ trait SMService {
 
   private def await[T](future : Awaitable[T]) : T = Await.result(future, 5.seconds)
 
-  private val portRange = 1024 to 65535
+  private val portRange = 1025 to 65535
 
   private val exclusions = Set("MONGO", "RABBITMQ", "NGINX", "REPAYMENTS_BANKREP_SETUP_DATA")
 
@@ -104,14 +104,15 @@ trait SMService {
   }
 
   def getServicesWithDefinedTestRoutes: Seq[String] = {
-    filterServicesWithExclusions() map{
+    filterServicesWithExclusions() collect {
       case (service, js) if js.\("testRoutes").asOpt[JsValue].isDefined => service
     }
   }
 
   def getServicesTestRoutes(service: String): Option[Seq[TestRoutesDesc]] = {
     val details = getDetailsForService(service)
-    filterServicesWithExclusions().map {
+    filterServicesWithExclusions()
+      .collect {
         case (name, js) if name == service => js.\("testRoutes").asOpt[Seq[TestRoutesDesc]]
       }
       .head
