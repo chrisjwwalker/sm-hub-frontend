@@ -35,31 +35,28 @@ trait SMService {
 
   private def await[T](future : Awaitable[T]) : T = Await.result(future, 5.seconds)
 
-  private def portRange = 1024 to 65535
+  private val portRange = 1024 to 65535
 
-  private val exclusions = Seq("MONGO", "RABBITMQ", "NGINX", "REPAYMENTS_BANKREP_SETUP_DATA")
+  private val exclusions = Set("MONGO", "RABBITMQ", "NGINX", "REPAYMENTS_BANKREP_SETUP_DATA")
 
-  private def filterServicesWithExclusions(exclude: Boolean): Seq[(String, JsValue)] = {
+  private def filterServicesWithExclusions(exclude: Boolean = true): Seq[(String, JsValue)] = {
     if(exclude) {
-      jsonConnector.loadServicesJson.fields.filterNot(x => exclusions contains x._1)
+      jsonConnector.loadServicesJson.fields.filterNot{case (service, _) => exclusions (service)}
     } else {
       jsonConnector.loadServicesJson.fields
     }
   }
 
   def getRunningServices(currentProfile: String = ""): Seq[(String, RunningResponse)] = {
-    if(currentProfile.trim.equals("")) {
-      Seq.empty
-    } else {
-      val profile       = currentProfile.toUpperCase.trim.replace(" ", "_")
-      val activeProfile = jsonConnector.loadProfilesJson.\(profile).as[List[String]]
-      val validApps     = filterServicesWithExclusions(false)
-        .filter(activeProfile contains _._1)
+    val profile = currentProfile.trim.replace(" ", "_")
+    if (profile.isEmpty) { Seq.empty } else {
+      val validServices  = jsonConnector.loadProfilesJson.\(profile.toUpperCase).as[Set[String]]
 
-      validApps.map { mapping =>
-        val port = mapping._2.\("defaultPort").as[Int]
-        val rr   = await(httpConnector.pingService(port))
-        mapping._1 -> rr
+      filterServicesWithExclusions(false) collect {
+        case (name, json) if validServices(name) =>
+          val port        = json.\("defaultPort").as[Int]
+          val isRunning   = await(httpConnector.pingService(port))
+          name -> isRunning
       }
     }
   }
@@ -67,19 +64,19 @@ trait SMService {
   def getValidPortNumbers(searchedRange: Option[(Int, Int)]): Seq[Int] = {
     searchedRange match {
       case Some((start, end)) =>
-        val currentPorts   = filterServicesWithExclusions(true) map(_._2.\("defaultPort").as[Int])
-        val availablePorts = portRange.filterNot(a => currentPorts.contains(a))
-        (start to end).filter(x => availablePorts.contains(x))
+        val currentPorts   = filterServicesWithExclusions() map { case (_, details) => details.\("defaultPort").as[Int] }
+        val availablePorts = portRange.diff(currentPorts).toSet
+        (start to end).filter(availablePorts)
       case _ => Seq.empty
     }
   }
 
   def getAllProfiles: Seq[String] = {
-    jsonConnector.loadProfilesJson.fields.filterNot(_._1 == "ALL").map(_._1)
+    jsonConnector.loadProfilesJson.fields collect {case (service, _) if service != "ALL" => service}
   }
 
   def getAllServices: Seq[String] = {
-    filterServicesWithExclusions(true) map(_._1)
+    filterServicesWithExclusions() map {case (service, _) => service}
   }
 
   def getServicesInProfile(profile: String): Seq[String] = {
@@ -91,33 +88,36 @@ trait SMService {
   }
 
   def getDuplicatePorts: Map[Int, Seq[String]] = {
-    val validServices = filterServicesWithExclusions(true)
-
-    val allPorts       = validServices.map(_._2.\("defaultPort").as[Int])
+    val validServices = filterServicesWithExclusions()
+    val allPorts = validServices.map {
+      case(_, js) => js.\("defaultPort").as[Int]
+    }
     val duplicatePorts = allPorts.diff(allPorts.distinct)
 
     validServices
-      .filter(x => duplicatePorts.contains(x._2.\("defaultPort").as[Int]))
-      .map(x => x._1 -> x._2.\("defaultPort").as[Int])
-      .groupBy(x => x._2)
-      .map(x => x._1 -> x._2.map(i => i._1))
+      .map{case (service, json) => service -> json.\("defaultPort").as[Int]}
+      .filter{case (_, port) => duplicatePorts.contains(port)}
+      .groupBy{case (_, port) => port}
+      .map{case (port, services) => port -> services.map{
+        case (name, _) => name}
+      }
   }
 
   def getServicesWithDefinedTestRoutes: Seq[String] = {
-    filterServicesWithExclusions(true)
-      .filter(_._2.\("testRoutes").asOpt[JsValue].nonEmpty)
-      .map(_._1)
+    filterServicesWithExclusions() map{
+      case (service, js) if js.\("testRoutes").asOpt[JsValue].isDefined => service
+    }
   }
 
   def getServicesTestRoutes(service: String): Option[Seq[TestRoutesDesc]] = {
-    val testRoutes = filterServicesWithExclusions(true)
-      .filter(_._1 == service)
-      .map(_._2.\("testRoutes").asOpt[Seq[TestRoutesDesc]])
+    val details = getDetailsForService(service)
+    filterServicesWithExclusions().map {
+        case (name, js) if name == service => js.\("testRoutes").asOpt[Seq[TestRoutesDesc]]
+      }
       .head
-
-    testRoutes.map(x => x.map { a =>
-      val details = getDetailsForService(service)
-      a.copy(route = s"http://localhost:${details.\("defaultPort").as[Int]}${a.route}")
-    })
+      .map(testRoutes => testRoutes.map { testRoute =>
+        testRoute.copy(route = s"http://localhost:${details.\("defaultPort").as[Int]}${testRoute.route}")
+      }
+    )
   }
 }
