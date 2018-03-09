@@ -23,14 +23,24 @@ import org.scalatestplus.play.PlaySpec
 class SMServiceSpec extends PlaySpec with MockitoSugar {
 
   val mockHttpConnector = mock[HttpConnector]
+  val mockJsonConnector = mock[JsonConnector]
 
   val testPort = 9973
 
   val testService = new SMService {
     override val httpConnector = mockHttpConnector
-    override val jsonConnector = new JsonConnector {
-      override val homeDir = System.getProperty("user.home")
-      override val pathToSM = ""
+    override val jsonConnector = mockJsonConnector
+  }
+
+  "getRunningServices" should {
+    "return an empty seq" when {
+      "no profile is provided" in {
+        assert(testService.getRunningServices().isEmpty)
+      }
+    }
+
+    "return a sequence of String -> RunningResponses" in {
+      val result = testService.getRunningServices()
     }
   }
 }

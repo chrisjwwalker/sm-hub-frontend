@@ -43,30 +43,30 @@ class HttpConnectorSpec extends PlaySpec with MockitoSugar with FutureAwaits wit
 
   val successResponse = new WSResponse {
     override def cookie(name: String) = ???
-    override def underlying[T] = ???
-    override def body = ???
-    override def bodyAsBytes = ???
-    override def cookies = ???
-    override def allHeaders = ???
-    override def xml = ???
-    override def statusText = ???
-    override def json = ???
-    override def header(key: String) = ???
-    override def status = OK
+    override def underlying[T]        = ???
+    override def body                 = ???
+    override def bodyAsBytes          = ???
+    override def cookies              = ???
+    override def allHeaders           = ???
+    override def xml                  = ???
+    override def statusText           = ???
+    override def json                 = ???
+    override def header(key: String)  = ???
+    override def status               = OK
   }
 
   val failResponse = new WSResponse {
     override def cookie(name: String) = ???
-    override def underlying[T] = ???
-    override def body = ???
-    override def bodyAsBytes = ???
-    override def cookies = ???
-    override def allHeaders = ???
-    override def xml = ???
-    override def statusText = ???
-    override def json = ???
-    override def header(key: String) = ???
-    override def status = INS
+    override def underlying[T]        = ???
+    override def body                 = ???
+    override def bodyAsBytes          = ???
+    override def cookies              = ???
+    override def allHeaders           = ???
+    override def xml                  = ???
+    override def statusText           = ???
+    override def json                 = ???
+    override def header(key: String)  = ???
+    override def status               = INS
   }
 
   "pingService" should {
