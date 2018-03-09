@@ -50,13 +50,13 @@ trait SMService {
   def getRunningServices(currentProfile: String = ""): Seq[(String, RunningResponse)] = {
     val profile = currentProfile.trim.replace(" ", "_")
     if (profile.isEmpty) { Seq.empty } else {
-      val validServices  = jsonConnector.loadProfilesJson.\(profile.toUpperCase).as[Set[String]]
-
-      filterServicesWithExclusions(false) collect {
-        case (name, json) if validServices(name) =>
-          val port        = json.\("defaultPort").as[Int]
-          val isRunning   = await(httpConnector.pingService(port))
-          name -> isRunning
+      jsonConnector.loadProfilesJson.\(profile.toUpperCase).asOpt[Set[String]].fold(Seq.empty[(String, RunningResponse)]) { validServices =>
+        filterServicesWithExclusions(false) collect {
+          case (name, json) if validServices(name) =>
+            val port      = json.\("defaultPort").as[Int]
+            val isRunning = await(httpConnector.pingService(port))
+            s"$name@$port" -> isRunning
+        }
       }
     }
   }
@@ -80,7 +80,7 @@ trait SMService {
   }
 
   def getServicesInProfile(profile: String): Seq[String] = {
-    jsonConnector.loadProfilesJson.\(profile.capitalize).as[Seq[String]]
+    jsonConnector.loadProfilesJson.\(profile.toUpperCase).as[Seq[String]]
   }
 
   def getDetailsForService(service: String): JsObject = {
@@ -112,13 +112,8 @@ trait SMService {
   def getServicesTestRoutes(service: String): Option[Seq[TestRoutesDesc]] = {
     val details = getDetailsForService(service)
     filterServicesWithExclusions()
-      .collect {
-        case (name, js) if name == service => js.\("testRoutes").asOpt[Seq[TestRoutesDesc]]
-      }
+      .collect { case (name, js) if name == service => js.\("testRoutes").asOpt[Seq[TestRoutesDesc]] }
       .head
-      .map(testRoutes => testRoutes.map { testRoute =>
-        testRoute.copy(route = s"http://localhost:${details.\("defaultPort").as[Int]}${testRoute.route}")
-      }
-    )
+      .map(testRoutes => testRoutes.map { testRoute => testRoute.copy(route = s"http://localhost:${details.\("defaultPort").as[Int]}${testRoute.route}") })
   }
 }

@@ -17,7 +17,11 @@
 }
 
 <div class="col-md-4">
-    <div class="alert @evaluateResponse()" role="alert">
-        <p class="text-center"><strong>@serviceName</strong></p>
+    <div class="alert @evaluateResponse() text-center" role="alert">
+        <a href="@routes.MainController.detailsForService(serviceName.split("@")(0))">
+            @for((segment, ind) <- serviceName.split("@").zipWithIndex) {
+                @if(ind != 2) { @segment <br> } else { @segment }
+            }
+        </a>
     </div>
 </div>

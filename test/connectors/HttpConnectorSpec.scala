@@ -18,7 +18,7 @@ package connectors
 
 import java.net.ConnectException
 
-import common.{GreenResponse, Http, RedResponse}
+import common.{AmberResponse, GreenResponse, Http, RedResponse}
 import org.mockito.ArgumentMatchers
 import org.mockito.Mockito.when
 import org.scalatest.mockito.MockitoSugar
@@ -28,6 +28,7 @@ import play.api.test.{DefaultAwaitTimeout, FutureAwaits}
 
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
+import scala.concurrent.TimeoutException
 
 class HttpConnectorSpec extends PlaySpec with MockitoSugar with FutureAwaits with DefaultAwaitTimeout {
 
@@ -43,30 +44,30 @@ class HttpConnectorSpec extends PlaySpec with MockitoSugar with FutureAwaits wit
 
   val successResponse = new WSResponse {
     override def cookie(name: String) = ???
-    override def underlying[T] = ???
-    override def body = ???
-    override def bodyAsBytes = ???
-    override def cookies = ???
-    override def allHeaders = ???
-    override def xml = ???
-    override def statusText = ???
-    override def json = ???
-    override def header(key: String) = ???
-    override def status = OK
+    override def underlying[T]        = ???
+    override def body                 = ???
+    override def bodyAsBytes          = ???
+    override def cookies              = ???
+    override def allHeaders           = ???
+    override def xml                  = ???
+    override def statusText           = ???
+    override def json                 = ???
+    override def header(key: String)  = ???
+    override def status               = OK
   }
 
   val failResponse = new WSResponse {
     override def cookie(name: String) = ???
-    override def underlying[T] = ???
-    override def body = ???
-    override def bodyAsBytes = ???
-    override def cookies = ???
-    override def allHeaders = ???
-    override def xml = ???
-    override def statusText = ???
-    override def json = ???
-    override def header(key: String) = ???
-    override def status = INS
+    override def underlying[T]        = ???
+    override def body                 = ???
+    override def bodyAsBytes          = ???
+    override def cookies              = ???
+    override def allHeaders           = ???
+    override def xml                  = ???
+    override def statusText           = ???
+    override def json                 = ???
+    override def header(key: String)  = ???
+    override def status               = INS
   }
 
   "pingService" should {
@@ -95,6 +96,16 @@ class HttpConnectorSpec extends PlaySpec with MockitoSugar with FutureAwaits wit
 
         val result = await(testConnector.pingService(testPort))
         result mustBe RedResponse
+      }
+    }
+
+    "return an AmberResponse" when {
+      "a TimeoutException was thrown" in {
+        when(mockHttpClient.get(ArgumentMatchers.any()))
+          .thenReturn(Future.failed(new TimeoutException()))
+
+        val result = await(testConnector.pingService(testPort))
+        result mustBe AmberResponse
       }
     }
   }
