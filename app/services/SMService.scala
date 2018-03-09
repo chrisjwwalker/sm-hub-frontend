@@ -80,7 +80,7 @@ trait SMService {
   }
 
   def getServicesInProfile(profile: String): Seq[String] = {
-    jsonConnector.loadProfilesJson.\(profile.capitalize).as[Seq[String]]
+    jsonConnector.loadProfilesJson.\(profile.toUpperCase).as[Seq[String]]
   }
 
   def getDetailsForService(service: String): JsObject = {

@@ -14,11 +14,21 @@
  * limitations under the License.
  */
 
+import scoverage.ScoverageKeys
+
 val appName = "sm-hub-frontend"
+
+lazy val scoverageSettings = Seq(
+  ScoverageKeys.coverageExcludedPackages  := "<empty>;Reverse.*;models/.data/..*;views.*;models.*;common.*;.*(AuthService|BuildInfo|Routes).*",
+  ScoverageKeys.coverageMinimum           := 80,
+  ScoverageKeys.coverageFailOnMinimum     := true,
+  ScoverageKeys.coverageHighlighting      := true
+)
 
 lazy val frontend = Project(appName, file("."))
   .enablePlugins(PlayScala)
   .settings(PlayKeys.playDefaultPort := 1024)
+  .settings(scoverageSettings:_*)
   .settings(
     scalaVersion        :=  "2.11.11",
     resolvers           +=  "scalaz-bintray" at "https://dl.bintray.com/scalaz/releases",

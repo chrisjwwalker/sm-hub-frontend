@@ -33,74 +33,65 @@ trait MainController extends Controller {
 
   val smService: SMService
 
-  def homeRedirect(): Action[AnyContent] = Action.async { implicit request =>
-    Future(Redirect(routes.MainController.home()))
-  }
-
-  def home(): Action[AnyContent] = Action.async { implicit request =>
-    val profile = request.session.get("last-searched-profile").getOrElse("")
+  def home(profile: String): Action[AnyContent] = Action { implicit request =>
     val apps    = smService.getRunningServices(profile)
-    Future(Ok(HomeView(apps, RunningServicesForm.form.fill(profile))))
+    Ok(HomeView(apps, RunningServicesForm.form.fill(profile)))
   }
 
-  def submitHome(): Action[AnyContent] = Action.async { implicit request =>
+  def submitHome(): Action[AnyContent] = Action { implicit request =>
     RunningServicesForm.form.bindFromRequest.fold(
-      errors => {
-        Future(BadRequest(HomeView(smService.getRunningServices(), errors)))
-      },
-      valid => {
-        Future.successful(Redirect(routes.MainController.home()).withSession("last-searched-profile" -> valid))
-      }
+      errors => BadRequest(HomeView(smService.getRunningServices(), errors)),
+      valid  => Redirect(routes.MainController.home(valid))
     )
   }
 
-  def availablePorts(): Action[AnyContent] = Action.async { implicit request =>
+  def availablePorts(): Action[AnyContent] = Action { implicit request =>
     val ports = smService.getValidPortNumbers(None)
-    Future(Ok(PortsView(ports, AvailablePortsForm.form)))
+    Ok(PortsView(ports, AvailablePortsForm.form))
   }
 
-  def submitAvailablePorts(): Action[AnyContent] = Action.async { implicit request =>
+  def submitAvailablePorts(): Action[AnyContent] = Action { implicit request =>
     AvailablePortsForm.form.bindFromRequest.fold(
-      errors => Future(BadRequest(PortsView(smService.getValidPortNumbers(None), errors))),
+      errors => BadRequest(PortsView(smService.getValidPortNumbers(None), errors)),
       valid  => {
         val ports = smService.getValidPortNumbers(Some(valid))
-        Future(Ok(PortsView(ports, AvailablePortsForm.form.fill(valid))))
+        Ok(PortsView(ports, AvailablePortsForm.form.fill(valid)))
       }
     )
   }
 
-  def currentProfiles(): Action[AnyContent] = Action.async { implicit request =>
+  def currentProfiles(): Action[AnyContent] = Action { implicit request =>
     val profiles = smService.getAllProfiles
-    Future(Ok(ProfilesView(profiles)))
+    Ok(ProfilesView(profiles))
   }
 
-  def currentServices(): Action[AnyContent] = Action.async { implicit request =>
+  def currentServices(): Action[AnyContent] = Action { implicit request =>
     val services = smService.getAllServices
-    Future(Ok(ServicesView(services)))
+    Ok(ServicesView(services))
   }
 
-  def servicesInProfile(profile: String): Action[AnyContent] = Action.async { implicit request =>
+  def servicesInProfile(profile: String): Action[AnyContent] = Action { implicit request =>
     val services = smService.getServicesInProfile(profile)
-    Future(Ok(ServicesInProfileView(profile, services)))
+    Ok(ServicesInProfileView(profile, services))
   }
 
-  def detailsForService(service: String): Action[AnyContent] = Action.async { implicit request =>
+  def detailsForService(service: String): Action[AnyContent] = Action { implicit request =>
     val serviceDetails = smService.getDetailsForService(service)
-    Future(Ok(ServiceDetailsView(serviceDetails)))
+    Ok(ServiceDetailsView(serviceDetails))
   }
 
-  def potentialConflicts(): Action[AnyContent] = Action.async { implicit request =>
+  def potentialConflicts(): Action[AnyContent] = Action { implicit request =>
     val potentialConflicts = smService.getDuplicatePorts
-    Future(Ok(PotentialConflictsView(potentialConflicts)))
+    Ok(PotentialConflictsView(potentialConflicts))
   }
 
-  def serviceTestRoutes(): Action[AnyContent] = Action.async { implicit request =>
+  def serviceTestRoutes(): Action[AnyContent] = Action { implicit request =>
     val servicesWithTestRoutes = smService.getServicesWithDefinedTestRoutes
-    Future(Ok(ServiceTestRoutesView(servicesWithTestRoutes)))
+    Ok(ServiceTestRoutesView(servicesWithTestRoutes))
   }
 
-  def serviceTestRoutesExpanded(service: String): Action[AnyContent] = Action.async { implicit request =>
+  def serviceTestRoutesExpanded(service: String): Action[AnyContent] = Action { implicit request =>
     val serviceTestRoutes = smService.getServicesTestRoutes(service)
-    Future(Ok(ServiceTestRoutesExpandedView(service, serviceTestRoutes)))
+    Ok(ServiceTestRoutesExpandedView(service, serviceTestRoutes))
   }
 }

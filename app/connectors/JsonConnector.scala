@@ -24,26 +24,23 @@ import play.api.libs.json.{JsObject, Json}
 import scala.io.Source
 
 class DefaultJsonConnector @Inject()(configuration: Configuration) extends JsonConnector {
-  override val homeDir  = System.getProperty("user.home")
-  override val pathToSM = configuration.underlying.getString("smPath")
+  override val homeDir        = System.getProperty("user.home")
+  override val pathToSM       = configuration.underlying.getString("smPath")
+  override def sourceFileJson(fileName: String): String = {
+    Source.fromFile(s"$homeDir$pathToSM$fileName.json").getLines().mkString
+  }
 }
 
 trait JsonConnector {
   val homeDir: String
   val pathToSM: String
 
-  def loadServicesJson: JsObject = loadAndParse("services")
+  def sourceFileJson(fileName: String): String
 
-  def loadProfilesJson: JsObject = loadAndParse("profiles")
-
-  def loadServiceMappingsJson: JsObject = loadAndParse("service_mappings")
+  def loadServicesJson: JsObject        = loadAndParse("services")
+  def loadProfilesJson: JsObject        = loadAndParse("profiles")
 
   private def loadAndParse(fileName: String): JsObject = {
-    Json.parse(
-      Source
-        .fromFile(s"$homeDir$pathToSM$fileName.json")
-        .getLines()
-        .mkString
-    ).as[JsObject]
+    Json.parse(sourceFileJson(fileName)).as[JsObject]
   }
 }

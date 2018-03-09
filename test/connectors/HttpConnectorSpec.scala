@@ -18,7 +18,7 @@ package connectors
 
 import java.net.ConnectException
 
-import common.{GreenResponse, Http, RedResponse}
+import common.{AmberResponse, GreenResponse, Http, RedResponse}
 import org.mockito.ArgumentMatchers
 import org.mockito.Mockito.when
 import org.scalatest.mockito.MockitoSugar
@@ -28,6 +28,7 @@ import play.api.test.{DefaultAwaitTimeout, FutureAwaits}
 
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
+import scala.concurrent.TimeoutException
 
 class HttpConnectorSpec extends PlaySpec with MockitoSugar with FutureAwaits with DefaultAwaitTimeout {
 
@@ -95,6 +96,16 @@ class HttpConnectorSpec extends PlaySpec with MockitoSugar with FutureAwaits wit
 
         val result = await(testConnector.pingService(testPort))
         result mustBe RedResponse
+      }
+    }
+
+    "return an AmberResponse" when {
+      "a TimeoutException was thrown" in {
+        when(mockHttpClient.get(ArgumentMatchers.any()))
+          .thenReturn(Future.failed(new TimeoutException()))
+
+        val result = await(testConnector.pingService(testPort))
+        result mustBe AmberResponse
       }
     }
   }

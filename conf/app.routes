@@ -3,7 +3,7 @@
 # ~~~~
 
 # Home page
-GET     /                           controllers.MainController.home()
+GET     /                           controllers.MainController.home(profile ?= "")
 POST    /                           controllers.MainController.submitHome()
 
 GET     /available-ports            controllers.MainController.availablePorts()
