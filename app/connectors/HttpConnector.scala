@@ -20,6 +20,8 @@ import java.net.ConnectException
 import javax.inject.Inject
 
 import common._
+import org.jsoup.Jsoup
+import org.jsoup.nodes.Document
 
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.{Future, TimeoutException}
@@ -28,6 +30,10 @@ class DefaultHttpConnector @Inject()(val http: Http) extends HttpConnector
 
 trait HttpConnector {
   val http: Http
+
+  def getBodyOfPage(port: Int, path: String): Future[Document] = {
+    http.get(s"http://localhost:$port$path").map(resp => Jsoup.parse(resp.body))
+  }
 
   def pingService(port: Int): Future[RunningResponse] = {
     http.get(s"http://localhost:$port/ping/ping") map { x =>

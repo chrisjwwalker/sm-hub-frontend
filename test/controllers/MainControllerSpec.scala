@@ -27,6 +27,9 @@ import org.mockito.Mockito.when
 import org.mockito.ArgumentMatchers
 import play.api.libs.json.Json
 
+import scala.concurrent.Future
+import scala.concurrent.ExecutionContext.Implicits.global
+
 class MainControllerSpec extends PlaySpec with MockitoSugar {
 
   val mockSMService = mock[SMService]
@@ -210,6 +213,16 @@ class MainControllerSpec extends PlaySpec with MockitoSugar {
         .thenReturn(Some(Seq(TestRoutesDesc("testName", "/test/uri", "testDesc"))))
 
       val result = testController.serviceTestRoutesExpanded("testService1")(request)
+      status(result) mustBe OK
+    }
+  }
+
+  "availableAssetsVersions" should {
+    "return an OK" in {
+      when(mockSMService.getAssetsFrontendVersions)
+        .thenReturn(Future(List("version1", "version2", "version3")))
+
+      val result = testController.availableAssetsVersions()(request)
       status(result) mustBe OK
     }
   }

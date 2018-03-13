@@ -16,16 +16,19 @@
 
 package services
 
+import java.net.ConnectException
+
 import common.{AmberResponse, GreenResponse, RedResponse}
 import connectors.{HttpConnector, JsonConnector}
 import models.TestRoutesDesc
+import org.jsoup.Jsoup
+import org.mockito.ArgumentMatchers
+import org.mockito.Mockito.{reset, when}
+import org.scalatest.BeforeAndAfterEach
 import org.scalatest.mockito.MockitoSugar
 import org.scalatestplus.play.PlaySpec
 import play.api.libs.json.Json
-import org.mockito.Mockito.{reset, when}
-import org.mockito.ArgumentMatchers
-import org.scalatest.BeforeAndAfterEach
-import org.scalatestplus.play.guice.GuiceOneAppPerSuite
+import play.api.test.Helpers._
 
 import scala.concurrent.Future
 import scala.concurrent.ExecutionContext.Implicits.global
@@ -323,6 +326,37 @@ class SMServiceSpec extends PlaySpec with MockitoSugar with BeforeAndAfterEach {
 
       val result = testService.getServicesTestRoutes("testService3")
       result mustBe None
+    }
+  }
+
+  "getAssetsFrontendVersions" should {
+    "return list of <li with href of specific assets version>" in {
+      val result = Seq("2.214.0", "2.211.0")
+
+      val htmlResponse =
+        """
+          |<body>
+          |<h2>Directory listing for /assets/</h2>
+          |<hr>
+          |<ul>
+          |<li><a href="2.214.0">2.214.0/</a>
+          |<li><a href="2.211.0">2.211.0/</a>
+          |</ul>
+          |<hr>
+          |</body>
+        """.stripMargin
+
+      when(mockHttpConnector.getBodyOfPage(ArgumentMatchers.any(),ArgumentMatchers.any()))
+          .thenReturn(Future.successful(Jsoup.parse(htmlResponse)))
+
+      await(testService.getAssetsFrontendVersions) mustBe result
+    }
+
+    "return an empty list when a ConnectException is thrown" in {
+      when(mockHttpConnector.getBodyOfPage(ArgumentMatchers.any(),ArgumentMatchers.any()))
+        .thenReturn(Future.failed(new ConnectException()))
+
+      await(testService.getAssetsFrontendVersions) mustBe List()
     }
   }
 }
