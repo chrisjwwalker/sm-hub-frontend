@@ -23,8 +23,9 @@ import connectors.{HttpConnector, JsonConnector}
 import models.TestRoutesDesc
 import play.api.libs.json.{JsObject, JsValue}
 
+import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.duration._
-import scala.concurrent.{Await, Awaitable}
+import scala.concurrent.{Await, Awaitable, Future}
 
 class DefaultSMService @Inject()(val jsonConnector: JsonConnector,
                                  val httpConnector: HttpConnector) extends SMService
@@ -134,5 +135,13 @@ trait SMService {
       .collect { case (name, js) if name == service => js.\("testRoutes").asOpt[Seq[TestRoutesDesc]] }
       .head
       .map(testRoutes => testRoutes.map { testRoute => testRoute.copy(route = s"http://localhost:${details.\("defaultPort").as[Int]}${testRoute.route}") })
+  }
+
+  def getAssetsFrontendVersions: Future[List[String]] = {
+    httpConnector.getBodyOfPage(9032, "/assets") map { doc =>
+      doc.getElementsByTag("a").text.replace("/", "").split(" ").toList
+    } recover {
+      case _ => List.empty[String]
+    }
   }
 }

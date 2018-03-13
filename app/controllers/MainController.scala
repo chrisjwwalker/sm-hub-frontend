@@ -108,4 +108,10 @@ trait MainController extends Controller {
     val serviceTestRoutes = smService.getServicesTestRoutes(service)
     Ok(ServiceTestRoutesExpandedView(service, serviceTestRoutes))
   }
+
+  def availableAssetsVersions(): Action[AnyContent] = Action.async { implicit request =>
+    smService.getAssetsFrontendVersions map { versions =>
+      Ok(AssetsVersions(versions.reverse))
+    }
+  }
 }

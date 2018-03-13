@@ -19,6 +19,7 @@ package connectors
 import java.net.ConnectException
 
 import common.{AmberResponse, GreenResponse, Http, RedResponse}
+import org.jsoup.Jsoup
 import org.mockito.ArgumentMatchers
 import org.mockito.Mockito.when
 import org.scalatest.mockito.MockitoSugar
@@ -42,10 +43,10 @@ class HttpConnectorSpec extends PlaySpec with MockitoSugar with FutureAwaits wit
   val INS = 500
   val testPort = 9000
 
-  val successResponse = new WSResponse {
+  def fakeResponse(statusInt: Int, bodyIn: String = ""): WSResponse = new WSResponse {
     override def cookie(name: String) = ???
     override def underlying[T]        = ???
-    override def body                 = ???
+    override def body                 = bodyIn
     override def bodyAsBytes          = ???
     override def cookies              = ???
     override def allHeaders           = ???
@@ -53,28 +54,14 @@ class HttpConnectorSpec extends PlaySpec with MockitoSugar with FutureAwaits wit
     override def statusText           = ???
     override def json                 = ???
     override def header(key: String)  = ???
-    override def status               = OK
-  }
-
-  val failResponse = new WSResponse {
-    override def cookie(name: String) = ???
-    override def underlying[T]        = ???
-    override def body                 = ???
-    override def bodyAsBytes          = ???
-    override def cookies              = ???
-    override def allHeaders           = ???
-    override def xml                  = ???
-    override def statusText           = ???
-    override def json                 = ???
-    override def header(key: String)  = ???
-    override def status               = INS
+    override def status               = statusInt
   }
 
   "pingService" should {
     "return a GreenResponse" when {
       "a call to a services ping ping has been successful" in {
         when(mockHttpClient.get(ArgumentMatchers.any()))
-          .thenReturn(Future(successResponse))
+          .thenReturn(Future(fakeResponse(OK)))
 
         val result = await(testConnector.pingService(testPort))
         result mustBe GreenResponse
@@ -92,7 +79,7 @@ class HttpConnectorSpec extends PlaySpec with MockitoSugar with FutureAwaits wit
 
       "the status code was anything other than an OK" in {
         when(mockHttpClient.get(ArgumentMatchers.any()))
-          .thenReturn(Future(failResponse))
+          .thenReturn(Future(fakeResponse(INS)))
 
         val result = await(testConnector.pingService(testPort))
         result mustBe RedResponse
@@ -106,6 +93,40 @@ class HttpConnectorSpec extends PlaySpec with MockitoSugar with FutureAwaits wit
 
         val result = await(testConnector.pingService(testPort))
         result mustBe AmberResponse
+      }
+    }
+  }
+
+  "getBodyOfPage" should {
+    "parse a response and return a Jsoup document" in {
+      val ids = Map(
+        "title" -> "Directory listing for /assets/",
+        "v1"    -> "2.214.0/",
+        "v2"    -> "2.211.0/"
+      )
+
+      val htmlResponse =
+        """
+          |<body>
+          |<h2 id="title">Directory listing for /assets/</h2>
+          |<hr>
+          |<ul>
+          |<li><a id="v1" href="2.214.0">2.214.0/</a>
+          |<li><a id="v2" href="2.211.0">2.211.0/</a>
+          |</ul>
+          |<hr>
+          |</body>
+        """.stripMargin
+
+      val testDoc = Jsoup.parse(htmlResponse.toString)
+
+      when(mockHttpClient.get(ArgumentMatchers.any()))
+        .thenReturn(Future(fakeResponse(OK, htmlResponse.toString)))
+
+      val result = await(testConnector.getBodyOfPage(1234, "/test"))
+      ids.map {
+        case (id, text) =>
+          result.getElementById(id).text mustBe text
       }
     }
   }

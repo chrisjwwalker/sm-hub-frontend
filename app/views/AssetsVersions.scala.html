@@ -1,0 +1,41 @@
+@import views.html.templates.main_template
+@import views.html.components.SideBar
+
+@(assetsVersions: List[String])()
+
+@main_template(title = "SM Hub") {
+    <div class="top-block-single">
+        <div class="container">
+            <div class="row">
+                <div class="col-md-3">
+                @SideBar()
+                </div>
+
+                <div class="col-md-9">
+                    <h2>Assets versions</h2>
+                    <hr>
+                    <div class="row">
+                        @if(assetsVersions.nonEmpty) {
+                            <ul>
+                            @for(version <- assetsVersions) {
+                                <div class="col-md-2">
+                                    <div class="alert alert-info text-center lead">
+                                        <a href="http://localhost:9032/assets/@version">
+                                            <strong>@version</strong>
+                                        </a>
+                                    </div>
+                                </div>
+                            }
+                            </ul>
+                        } else {
+                            <div class="col-md-12">
+                                <p class="text-center lead">There no versions of assets frontend available on your system</p>
+                                <p class="text-center">(Is assets frontend running?)</p>
+                            </div>
+                        }
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+}
