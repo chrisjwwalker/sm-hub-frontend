@@ -114,4 +114,9 @@ trait MainController extends Controller {
       Ok(AssetsVersions(versions.reverse))
     }
   }
+
+  def findGHEReferences(): Action[AnyContent] = Action { implicit request =>
+    val references = smService.getAllGHERefs
+    Ok(GHEReferences(references))
+  }
 }

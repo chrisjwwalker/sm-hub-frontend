@@ -1,0 +1,50 @@
+@import views.html.templates.main_template
+@import views.html.components.SideBar
+
+@(gheRefs: Seq[(String, String)])()
+
+@main_template(title = "SM Hub") {
+    <div class="top-block-single">
+        <div class="container">
+            <div class="row">
+                <div class="col-md-3">
+                @SideBar()
+                </div>
+
+                <div class="col-md-9">
+                    <h2>Old GitHub references</h2>
+                    <hr>
+                    <p class="text-center">
+                        These services all still reference the old github</p>
+                    <hr>
+                    <div class="row">
+                    @if(gheRefs.nonEmpty) {
+                        <div class="table-responsive">
+                            <table class="table table-striped">
+                                <thead>
+                                    <tr>
+                                        <th>Service</th>
+                                        <th>Repository</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                @for((service, repo) <- gheRefs) {
+                                    <tr>
+                                        <td>@service</td>
+                                        <td>@repo</td>
+                                    </tr>
+                                }
+                                </tbody>
+                            </table>
+                        </div>
+                    } else {
+                        <div class="col-md-12">
+                            <p class="text-center lead">There are no old github references in sm config</p>
+                        </div>
+                    }
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+}

@@ -21,6 +21,7 @@ GET     /potential-conflicts        controllers.MainController.potentialConflict
 GET     /test-routes-overview       controllers.MainController.serviceTestRoutes()
 GET     /test-routes-for-service    controllers.MainController.serviceTestRoutesExpanded(service ?= "")
 GET     /assets-versions            controllers.MainController.availableAssetsVersions()
+GET     /find-ghe-refernces         controllers.MainController.findGHEReferences()
 
 # Map static resources from the /public folder to the /assets URL path
 GET     /assets/*file               controllers.Assets.at(path="/public", file)

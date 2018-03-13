@@ -21,7 +21,8 @@ import java.net.ConnectException
 import common.{AmberResponse, GreenResponse, Http, RedResponse}
 import org.jsoup.Jsoup
 import org.mockito.ArgumentMatchers
-import org.mockito.Mockito.when
+import org.mockito.Mockito.{when, reset}
+import org.scalatest.BeforeAndAfterEach
 import org.scalatest.mockito.MockitoSugar
 import org.scalatestplus.play.PlaySpec
 import play.api.libs.ws.WSResponse
@@ -31,12 +32,17 @@ import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
 import scala.concurrent.TimeoutException
 
-class HttpConnectorSpec extends PlaySpec with MockitoSugar with FutureAwaits with DefaultAwaitTimeout {
+class HttpConnectorSpec extends PlaySpec with MockitoSugar with FutureAwaits with DefaultAwaitTimeout with BeforeAndAfterEach {
 
   val mockHttpClient = mock[Http]
 
   val testConnector = new HttpConnector {
     override val http = mockHttpClient
+  }
+
+  override protected def beforeEach(): Unit = {
+    super.beforeEach()
+    reset(mockHttpClient)
   }
 
   val OK = 200

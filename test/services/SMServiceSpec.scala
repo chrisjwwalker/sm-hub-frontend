@@ -359,4 +359,32 @@ class SMServiceSpec extends PlaySpec with MockitoSugar with BeforeAndAfterEach {
       await(testService.getAssetsFrontendVersions) mustBe List()
     }
   }
+
+  "getAllGHERefs" should {
+    "return a list of GHE refs" in {
+      val servicesJson = Json.obj(
+        "testService1" -> Json.obj("sources" -> Json.obj("repo" -> "github.tools")),
+        "testService2" -> Json.obj("sources" -> Json.obj("repo" -> "github"))
+      )
+
+      when(mockJsonConnector.loadServicesJson)
+        .thenReturn(servicesJson)
+
+      val result = testService.getAllGHERefs
+      result mustBe List(("testService1", "github.tools"))
+    }
+
+    "return an empty list" in {
+      val servicesJson = Json.obj(
+        "testService1" -> Json.obj("sources" -> Json.obj("repo" -> "github")),
+        "testService2" -> Json.obj("sources" -> Json.obj("repo" -> "github"))
+      )
+
+      when(mockJsonConnector.loadServicesJson)
+        .thenReturn(servicesJson)
+
+      val result = testService.getAllGHERefs
+      result mustBe List()
+    }
+  }
 }

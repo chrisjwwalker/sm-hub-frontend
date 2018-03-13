@@ -23,14 +23,15 @@ import org.scalatestplus.play.PlaySpec
 import play.api.test.FakeRequest
 import services.SMService
 import play.api.test.Helpers._
-import org.mockito.Mockito.when
+import org.mockito.Mockito.{when, reset}
 import org.mockito.ArgumentMatchers
+import org.scalatest.BeforeAndAfterEach
 import play.api.libs.json.Json
 
 import scala.concurrent.Future
 import scala.concurrent.ExecutionContext.Implicits.global
 
-class MainControllerSpec extends PlaySpec with MockitoSugar {
+class MainControllerSpec extends PlaySpec with MockitoSugar with BeforeAndAfterEach {
 
   val mockSMService = mock[SMService]
 
@@ -38,6 +39,11 @@ class MainControllerSpec extends PlaySpec with MockitoSugar {
 
   val testController = new MainController {
     override val smService = mockSMService
+  }
+
+  override protected def beforeEach(): Unit = {
+    super.beforeEach()
+    reset(mockSMService)
   }
 
   "home" should {
@@ -62,6 +68,9 @@ class MainControllerSpec extends PlaySpec with MockitoSugar {
 
     "return a bad request" when {
       "nothing has been put into the form" in {
+        when(mockSMService.getRunningServices(ArgumentMatchers.any()))
+          .thenReturn(Seq.empty[(String, RunningResponse)])
+
         val result = testController.submitHome()(request)
         status(result) mustBe BAD_REQUEST
       }
@@ -81,6 +90,9 @@ class MainControllerSpec extends PlaySpec with MockitoSugar {
   "submitAvailablePorts" should {
     "return a BadRequest" when {
       "no range has been provided" in {
+        when(mockSMService.getValidPortNumbers(ArgumentMatchers.any()))
+          .thenReturn(Seq())
+
         val result = testController.submitAvailablePorts()(request)
         status(result) mustBe BAD_REQUEST
       }
@@ -223,6 +235,16 @@ class MainControllerSpec extends PlaySpec with MockitoSugar {
         .thenReturn(Future(List("version1", "version2", "version3")))
 
       val result = testController.availableAssetsVersions()(request)
+      status(result) mustBe OK
+    }
+  }
+
+  "findGHEReferences" should {
+    "return an OK" in {
+      when(mockSMService.getAllGHERefs)
+        .thenReturn(Seq(("testService1", "repo")))
+
+      val result = testController.findGHEReferences()(request)
       status(result) mustBe OK
     }
   }

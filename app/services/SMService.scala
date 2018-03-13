@@ -144,4 +144,11 @@ trait SMService {
       case _ => List.empty[String]
     }
   }
+
+  def getAllGHERefs: Seq[(String, String)] = {
+    filterServicesWithExclusions().collect {
+      case (service, js) if js.\("sources").\("repo").as[String].contains("tools") =>
+        service -> js.\("sources").\("repo").as[String]
+    }
+  }
 }
