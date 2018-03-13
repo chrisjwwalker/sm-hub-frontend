@@ -21,7 +21,7 @@ import javax.inject.Inject
 import common.RunningResponse
 import connectors.{HttpConnector, JsonConnector}
 import models.TestRoutesDesc
-import play.api.libs.json.{JsArray, JsObject, JsValue, Json}
+import play.api.libs.json.{JsObject, JsValue}
 
 import scala.concurrent.duration._
 import scala.concurrent.{Await, Awaitable}
@@ -75,8 +75,29 @@ trait SMService {
     jsonConnector.loadProfilesJson.fields collect {case (service, _) if service != "ALL" => service}
   }
 
+  def searchForProfile(query: String): Seq[String] = {
+    if(query.contains("\"")) {
+      exactMatchSearch(jsonConnector.loadProfilesJson.fields, query)
+    } else {
+      jsonConnector.loadProfilesJson.fields.collect { case (name, _) if name.contains(query) => name}
+    }
+  }
+
   def getAllServices: Seq[String] = {
-    filterServicesWithExclusions() map {case (service, _) => service}
+    filterServicesWithExclusions() map { case (service, _) => service}
+  }
+
+  def searchForService(query: String): Seq[String]= {
+    if(query.contains("\"")) {
+      exactMatchSearch(filterServicesWithExclusions(), query)
+    } else {
+      filterServicesWithExclusions().collect { case (name, _) if name.contains(query) => name}
+    }
+  }
+
+  private def exactMatchSearch(f: => Seq[(String, JsValue)], quey: String): Seq[String] = {
+    val query = quey.trim.replaceAll("\"", "")
+    f.collect { case (name, _) if name.split("_").contains(query) => name }
   }
 
   def getServicesInProfile(profile: String): Seq[String] = {
@@ -98,9 +119,7 @@ trait SMService {
       .map{case (service, json) => service -> json.\("defaultPort").as[Int]}
       .filter{case (_, port) => duplicatePorts.contains(port)}
       .groupBy{case (_, port) => port}
-      .map{case (port, services) => port -> services.map{
-        case (name, _) => name}
-      }
+      .map{ case (port, services) => port -> services.map { case (name, _) => name } }
   }
 
   def getServicesWithDefinedTestRoutes: Seq[String] = {

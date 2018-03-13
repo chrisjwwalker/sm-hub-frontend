@@ -18,7 +18,7 @@ package controllers
 
 import javax.inject.Inject
 
-import forms.{AvailablePortsForm, RunningServicesForm}
+import forms.{AllProfilesForm, AllServiceForm, AvailablePortsForm, RunningServicesForm}
 import play.api.libs.json.Json
 import play.api.mvc.{Action, AnyContent, Controller}
 import services.SMService
@@ -62,12 +62,26 @@ trait MainController extends Controller {
 
   def currentProfiles(): Action[AnyContent] = Action { implicit request =>
     val profiles = smService.getAllProfiles
-    Ok(ProfilesView(profiles))
+    Ok(ProfilesView(profiles, AllProfilesForm.form))
+  }
+
+  def submitCurrentProfiles(): Action[AnyContent] = Action { implicit request =>
+    AllProfilesForm.form.bindFromRequest.fold(
+      errors => BadRequest(ProfilesView(smService.getAllProfiles, errors)),
+      valid  => Ok(ProfilesView(smService.searchForProfile(valid), AllProfilesForm.form.fill(valid)))
+    )
   }
 
   def currentServices(): Action[AnyContent] = Action { implicit request =>
     val services = smService.getAllServices
-    Ok(ServicesView(services))
+    Ok(ServicesView(services, AllServiceForm.form))
+  }
+
+  def submitCurrentServices(): Action[AnyContent] = Action { implicit request =>
+    AllServiceForm.form.bindFromRequest.fold(
+      errors => BadRequest(ServicesView(smService.getAllServices, errors)),
+      valid  => Ok(ServicesView(smService.searchForService(valid), AllServiceForm.form.fill(valid)))
+    )
   }
 
   def servicesInProfile(profile: String): Action[AnyContent] = Action { implicit request =>

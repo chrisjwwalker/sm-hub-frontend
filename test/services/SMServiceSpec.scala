@@ -25,6 +25,7 @@ import play.api.libs.json.Json
 import org.mockito.Mockito.{reset, when}
 import org.mockito.ArgumentMatchers
 import org.scalatest.BeforeAndAfterEach
+import org.scalatestplus.play.guice.GuiceOneAppPerSuite
 
 import scala.concurrent.Future
 import scala.concurrent.ExecutionContext.Implicits.global
@@ -133,6 +134,141 @@ class SMServiceSpec extends PlaySpec with MockitoSugar with BeforeAndAfterEach {
         .thenReturn(servicesJson)
 
       testService.getAllServices mustBe Seq("testService1", "testService2", "testService3", "testService4")
+    }
+  }
+
+  "searchForService" should {
+    val searchJson = Json.obj(
+      "cars"    -> Json.obj(),
+      "bars"    -> Json.obj(),
+      "scars"   -> Json.obj(),
+      "sabars"  -> Json.obj(),
+      "chicken" -> Json.obj(),
+      "burger"  -> Json.obj()
+    )
+
+    "return a seq of services (cars)" in {
+      when(mockJsonConnector.loadServicesJson)
+        .thenReturn(searchJson)
+
+      val result = testService.searchForService("cars")
+      result mustBe Seq("cars", "scars")
+    }
+
+    "return a seq of services (bars)" in {
+      when(mockJsonConnector.loadServicesJson)
+        .thenReturn(searchJson)
+
+      val result = testService.searchForService("bars")
+      result mustBe Seq("bars", "sabars")
+    }
+
+    "return a seq of services (rs)" in {
+      when(mockJsonConnector.loadServicesJson)
+        .thenReturn(searchJson)
+
+      val result = testService.searchForService("rs")
+      result mustBe Seq("cars", "bars", "scars", "sabars")
+    }
+
+    "return a seq of services (urg)" in {
+      when(mockJsonConnector.loadServicesJson)
+        .thenReturn(searchJson)
+
+      val result = testService.searchForService("urg")
+      result mustBe Seq("burger")
+    }
+
+    "return a seq of services (chi)" in {
+      when(mockJsonConnector.loadServicesJson)
+        .thenReturn(searchJson)
+
+      val result = testService.searchForService("chi")
+      result mustBe Seq("chicken")
+    }
+
+    "return an empty seq if no services are found" in {
+      when(mockJsonConnector.loadServicesJson)
+        .thenReturn(searchJson)
+
+      val result = testService.searchForService("qwerty")
+      result mustBe Seq()
+    }
+
+    "return only cars if searching for exact match" in {
+      when(mockJsonConnector.loadServicesJson)
+        .thenReturn(searchJson)
+
+      val result = testService.searchForService(""" "cars" """)
+      result mustBe Seq("cars")
+    }
+  }
+
+  "searchForProfile" should {
+    val searchJson = Json.obj(
+      "cars"    -> Json.arr(),
+      "bars"    -> Json.arr(),
+      "scars"   -> Json.arr(),
+      "sabars"  -> Json.arr(),
+      "chicken" -> Json.arr(),
+      "burger"  -> Json.arr()
+    )
+
+    "return a seq of services (cars)" in {
+      when(mockJsonConnector.loadProfilesJson)
+        .thenReturn(searchJson)
+
+      val result = testService.searchForProfile("cars")
+      result mustBe Seq("cars", "scars")
+    }
+
+    "return a seq of services (bars)" in {
+      when(mockJsonConnector.loadProfilesJson)
+        .thenReturn(searchJson)
+
+      val result = testService.searchForProfile("bars")
+      result mustBe Seq("bars", "sabars")
+    }
+
+    "return a seq of services (rs)" in {
+      when(mockJsonConnector.loadProfilesJson)
+        .thenReturn(searchJson)
+
+      val result = testService.searchForProfile("rs")
+      result mustBe Seq("cars", "bars", "scars", "sabars")
+    }
+
+    "return a seq of services (urg)" in {
+      when(mockJsonConnector.loadProfilesJson)
+        .thenReturn(searchJson)
+
+      val result = testService.searchForProfile("urg")
+      result mustBe Seq("burger")
+    }
+
+    "return a seq of services (chi)" in {
+      when(mockJsonConnector.loadProfilesJson)
+        .thenReturn(searchJson)
+
+      val result = testService.searchForProfile("chi")
+      result mustBe Seq("chicken")
+    }
+
+    "return a seq of services (chicken)" in {
+      when(mockJsonConnector.loadProfilesJson)
+        .thenReturn(searchJson)
+
+      val result = testService.searchForProfile(""""chicken"""")
+      result mustBe Seq("chicken")
+    }
+
+    "return an empty seq if no services are found" in {
+
+      when(mockJsonConnector.loadProfilesJson)
+        .thenReturn(searchJson)
+
+      val result = testService.searchForProfile("qwerty")
+      result mustBe Seq()
     }
   }
 
