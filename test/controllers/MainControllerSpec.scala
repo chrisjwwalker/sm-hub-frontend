@@ -106,6 +106,24 @@ class MainControllerSpec extends PlaySpec with MockitoSugar {
     }
   }
 
+  "submitCurrentProfiles" should {
+    "return an OK" in {
+      when(mockSMService.searchForProfile(ArgumentMatchers.any()))
+        .thenReturn(Seq("testProfile1"))
+
+      val result = testController.submitCurrentProfiles()(request.withFormUrlEncodedBody("profile" -> "testProfile1"))
+      status(result) mustBe OK
+    }
+
+    "return a BadRequest" in {
+      when(mockSMService.getAllProfiles)
+        .thenReturn(Seq("testProfile1", "testProfile2"))
+
+      val result = testController.submitCurrentProfiles()(request.withFormUrlEncodedBody())
+      status(result) mustBe BAD_REQUEST
+    }
+  }
+
   "currentServices" should {
     "return an OK" in {
       when(mockSMService.getAllServices)
@@ -113,6 +131,24 @@ class MainControllerSpec extends PlaySpec with MockitoSugar {
 
       val result = testController.currentServices()(request)
       status(result) mustBe OK
+    }
+  }
+
+  "submitCurrentServices" should {
+    "return an OK" in {
+      when(mockSMService.searchForService(ArgumentMatchers.any()))
+        .thenReturn(Seq("testService1"))
+
+      val result = testController.submitCurrentServices()(request.withFormUrlEncodedBody("service" -> "testService1"))
+      status(result) mustBe OK
+    }
+
+    "return a BadRequest" in {
+      when(mockSMService.getAllServices)
+        .thenReturn(Seq("testService1", "testService2"))
+
+      val result = testController.submitCurrentServices()(request.withFormUrlEncodedBody())
+      status(result) mustBe BAD_REQUEST
     }
   }
 

@@ -3,7 +3,7 @@
 
 @import common.RunningResponse
 
-@(profiles: Seq[String])()
+@(profiles: Seq[String], form: Form[String])()
 
 @main_template(title = "SM Hub") {
     <div class="top-block-single">
@@ -15,6 +15,16 @@
 
                 <div class="col-md-9">
                     <h2>Service manager profiles</h2>
+                    <hr>
+                    <form class="form-inline" action="@routes.MainController.submitCurrentProfiles()" method="post">
+                        <div class="form-group">
+                            <div class="input-group">
+                                <span class="input-group-addon" id="sizing-addon1">Profile</span>
+                                <input id="profile" name="profile" type="text" class="form-control" aria-describedby="sizing-addon1" value="@form("profile").value">
+                            </div>
+                        </div>
+                        <button type="submit" class="btn btn-primary"><span class="glyphicon glyphicon-th" aria-hidden="true"></span> Search</button>
+                    </form>
                     <hr>
                     <div class="row">
                     @if(profiles.nonEmpty) {

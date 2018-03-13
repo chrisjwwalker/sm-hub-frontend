@@ -23,13 +23,15 @@ import play.api.libs.json.{JsObject, Json}
 
 import scala.io.Source
 
+// $COVERAGE-OFF$
 class DefaultJsonConnector @Inject()(configuration: Configuration) extends JsonConnector {
-  override val homeDir        = System.getProperty("user.home")
-  override val pathToSM       = configuration.underlying.getString("smPath")
+  override val homeDir  = System.getProperty("user.home")
+  override val pathToSM = configuration.underlying.getString("smPath")
   override def sourceFileJson(fileName: String): String = {
     Source.fromFile(s"$homeDir$pathToSM$fileName.json").getLines().mkString
   }
 }
+// $COVERAGE-ON$
 
 trait JsonConnector {
   val homeDir: String
