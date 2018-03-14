@@ -1,0 +1,38 @@
+@import views.html.templates.main_template
+
+@(gheRefs: Seq[(String, String)])(implicit messages: Messages)
+
+@main_template(title = messages("app.tab-title")) {
+    <div class="col-md-9">
+        <h2>@messages("pages.ghe-refs.heading")</h2>
+        <hr>
+        <p class="text-center">@messages("pages.ghe-refs.description")</p>
+        <hr>
+        <div class="row">
+        @if(gheRefs.nonEmpty) {
+            <div class="table-responsive">
+                <table class="table table-striped">
+                    <thead>
+                        <tr>
+                            <th>@messages("pages.ghe-refs.table.col-1")</th>
+                            <th>@messages("pages.ghe-refs.table.col-2")</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                    @for((service, repo) <- gheRefs) {
+                        <tr>
+                            <td>@service</td>
+                            <td>@repo</td>
+                        </tr>
+                    }
+                    </tbody>
+                </table>
+            </div>
+        } else {
+            <div class="col-md-12">
+                <p class="text-center lead">@messages("pages.ghe-refs.no-refs")</p>
+            </div>
+        }
+        </div>
+    </div>
+}

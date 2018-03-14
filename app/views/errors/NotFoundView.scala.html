@@ -1,0 +1,11 @@
+@import views.html.templates.main_template
+
+@()(implicit messages: Messages)
+
+@main_template(title = messages("app.tab-title")) {
+    <div class="col-md-9">
+        <h1>@messages("pages.errors.not-found.heading")</h1>
+        <hr>
+        <p class="lead">@messages("pages.errors.not-found.body")</p>
+    </div>
+}

@@ -1,0 +1,42 @@
+@import views.html.templates.main_template
+
+@(potentialProblems: Map[Int, Seq[String]])(implicit messages: Messages)
+
+@main_template(title = messages("app.tab-title")) {
+    <div class="col-md-9">
+        <h2>@messages("pages.potential-conflicts.heading")</h2>
+        <hr>
+        <p class="text-center">@messages("pages.potential-conflicts.description")</p>
+        <hr>
+        <div class="row">
+        @if(potentialProblems.nonEmpty) {
+            <div class="table-responsive">
+                <table class="table table-striped">
+                    <thead>
+                        <tr>
+                            <th>@messages("pages.potential-conflicts.table.col-1")</th>
+                            <th>@messages("pages.potential-conflicts.table.col-2")</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                    @for((port, services) <- potentialProblems) {
+                        <tr>
+                            <td>@port</td>
+                            <td>
+                            @for((service, index) <- services.zipWithIndex) {
+                                @service  @if(index != services.size - 1) { <strong>-</strong> }
+                            }
+                            </td>
+                        </tr>
+                    }
+                    </tbody>
+                </table>
+            </div>
+        } else {
+            <div class="col-md-12">
+                <p class="text-center lead">@messages("pages.potential-conflicts.no-conflicts")</p>
+            </div>
+        }
+        </div>
+    </div>
+}

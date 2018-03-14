@@ -1,0 +1,37 @@
+@()(implicit messages: Messages)
+
+<h2>@messages("side-bar.heading")</h2>
+<hr>
+<div class="list-group">
+    <a id="running-services-link" href="@routes.MainController.home()" class="list-group-item">
+        <h4 class="list-group-item-heading"><span class="glyphicon glyphicon-play" aria-hidden="true"></span> @messages("side-bar.running-services")</h4>
+    </a>
+
+    <a id="service-profiles-link" href="@routes.MainController.currentProfiles()" class="list-group-item">
+        <h4 class="list-group-item-heading"><span class="glyphicon glyphicon-th" aria-hidden="true"></span> @messages("side-bar.profiles")</h4>
+    </a>
+
+    <a id="services-link" href="@routes.MainController.currentServices()" class="list-group-item">
+        <h4 class="list-group-item-heading"><span class="glyphicon glyphicon-th-list" aria-hidden="true"></span> @messages("side-bar.services")</h4>
+    </a>
+
+    <a id="available-ports-link" href="@routes.MainController.availablePorts" class="list-group-item">
+        <h4 class="list-group-item-heading"><span class="glyphicon glyphicon-plane" aria-hidden="true"></span> @messages("side-bar.available-ports")</h4>
+    </a>
+
+    <a id="duplicate-ports-link" href="@routes.MainController.potentialConflicts" class="list-group-item">
+        <h4 class="list-group-item-heading"><span class="glyphicon glyphicon-exclamation-sign" aria-hidden="true"></span> @messages("side-bar.conflicts")</h4>
+    </a>
+
+    <a id="test-routes-link" href="@routes.MainController.serviceTestRoutes()" class="list-group-item">
+        <h4 class="list-group-item-heading"><span class="glyphicon glyphicon-road" aria-hidden="true"></span> @messages("side-bar.test-routes")</h4>
+    </a>
+
+    <a id="assets-versions-link" href="@routes.MainController.availableAssetsVersions()" class="list-group-item">
+        <h4 class="list-group-item-heading"><span class="glyphicon glyphicon-picture" aria-hidden="true"></span> @messages("side-bar.assets")</h4>
+    </a>
+
+    <a id="ghe-refs-link" href="@routes.MainController.findGHEReferences()" class="list-group-item">
+        <h4 class="list-group-item-heading"><span class="glyphicon glyphicon-console" aria-hidden="true"></span> @messages("side-bar.github")</h4>
+    </a>
+</div>

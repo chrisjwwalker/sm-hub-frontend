@@ -1,0 +1,64 @@
+@import views.html.templates.main_template
+
+@import play.api.libs.json.JsObject
+
+@(details: JsObject)(implicit messages: Messages)
+
+@gitHubLink = @{
+    details.\("sources").\("repo").as[String]
+        .replace(".git","")
+        .replace(":", "/")
+        .replace("git@","https://")
+}
+
+@main_template(title = messages("app.tab-title")) {
+    <div class="col-md-9">
+        <h2>@messages("pages.service-details.heading", details.\("name").as[String])</h2>
+        <hr>
+        <div class="row">
+            <div class="table-responsive">
+                <table class="table table-striped">
+                    @if(details.\("template").asOpt[String].isDefined) {
+                        <tr>
+                            <td>@messages("pages.service-details.table.template")</td>
+                            <td>@{details.\("template").as[String]}</td>
+                        </tr>
+                    }
+                    @if(details.\("frontend").asOpt[Boolean].isDefined) {
+                        <tr>
+                            <td>@messages("pages.service-details.table.frontend")</td>
+                            <td>@{details.\("frontend").as[Boolean]}</td>
+                        </tr>
+                    }
+                    <tr>
+                        <td>@messages("pages.service-details.table.port")</td>
+                        <td>@{details.\("defaultPort").as[Int]}</td>
+                    </tr>
+                    <tr>
+                        <td>@messages("pages.service-details.table.git-clone")</td>
+                        <td>@{details.\("sources").\("repo").as[String]}</td>
+                    </tr>
+                    <tr>
+                        <td>@messages("pages.service-details.table.git-link")</td>
+                        <td>
+                            <a href="@gitHubLink">@gitHubLink</a>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>@messages("pages.service-details.table.params")</td>
+                        <td>
+                            @for(param <- details.\("binary").\("cmd").as[Seq[String]]) {
+                                <p>@param</p>
+                            }
+                            @if(details.\("sources").\("extra_params").asOpt[Seq[String]].isDefined) {
+                                @for(param <- details.\("sources").\("extra_params").as[Seq[String]]) {
+                                    <p>@param</p>
+                                }
+                            }
+                        </td>
+                    </tr>
+                </table>
+            </div>
+        </div>
+    </div>
+}

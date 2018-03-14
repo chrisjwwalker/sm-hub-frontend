@@ -1,0 +1,27 @@
+@import common.{GreenResponse, AmberResponse, RedResponse, RunningResponse}
+
+@(serviceName: String, runningStatus: RunningResponse)
+
+@evaluateResponse() = {
+    @runningStatus match {
+        case GreenResponse => {
+            alert-success
+        }
+        case RedResponse => {
+            alert-danger
+        }
+        case AmberResponse => {
+            alert-warn
+        }
+    }
+}
+
+<div class="col-md-4">
+    <div id="@serviceName-running-response" class="alert @evaluateResponse() text-center" role="alert">
+        <a id="@serviceName-details-link" href="@routes.MainController.detailsForService(serviceName.split("@")(0))">
+            @for((segment, ind) <- serviceName.split("@").zipWithIndex) {
+                @if(ind != 2) { @segment <br> } else { @segment }
+            }
+        </a>
+    </div>
+</div>

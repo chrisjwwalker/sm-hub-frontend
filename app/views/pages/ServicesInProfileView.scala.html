@@ -1,0 +1,25 @@
+@import views.html.templates.main_template
+
+@(profile: String, services: Seq[String])(implicit messages: Messages)
+
+@main_template(title = messages("app.tab-title")) {
+    <div class="col-md-9">
+        <h2>@messages("pages.services-in-profile.heading", profile)</h2>
+        <hr>
+        <div class="row">
+        @if(services.nonEmpty) {
+            @for(service <- services) {
+                <div class="col-md-6">
+                    <div class="alert alert-info text-center lead">
+                        <a href="@routes.MainController.detailsForService(service)">
+                            <strong>@service</strong>
+                        </a>
+                    </div>
+                </div>
+            }
+        } else {
+            <p class="text-center lead">@messages("pages.services-in-profile.no-profiles")</p>
+        }
+        </div>
+    </div>
+}

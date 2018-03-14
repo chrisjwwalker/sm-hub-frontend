@@ -1,0 +1,102 @@
+#
+# Copyright 2018 HM Revenue & Customs
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+#     http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+#
+
+app.tab-title                               = Service Manager Hub
+app.search                                  = Search
+
+nav-bar.toggle                              = Toggle navigation
+nav-bar.brand                               = Service Manager Hub
+nav-bar.welcome                             = Welcome, {0}
+
+side-bar.heading                            = Quick links
+side-bar.running-services                   = Running services
+side-bar.profiles                           = Profiles
+side-bar.services                           = Services
+side-bar.available-ports                    = Available ports
+side-bar.conflicts                          = Potential conflicts
+side-bar.test-routes                        = Service test routes
+side-bar.assets                             = Assets versions
+side-bar.github                             = Old GitHub references
+
+error-panel.header                          = There was a problem...
+
+validation.required.profile                 = Enter a profile as it appears in config
+validation.required.service                 = Enter a service name
+validation.required.profiles                = Enter a profile
+validation.required.port                    = Enter the {0} port between 1024 and 65535
+
+pages.errors.not-found.heading              = Sorry...
+pages.errors.not-found.body                 = This page could not be found
+
+pages.error.standard.heading                = Sorry...
+pages.error.standard.body                   = We''re having technical problems
+
+pages.assets-versions.heading               = Assets Versions
+pages.assets-versions.no-versions           = There no versions of assets frontend available on your system
+pages.assets-versions.is-running            = (Is assets frontend running?)
+
+pages.ghe-refs.heading                      = Old GitHub references
+pages.ghe-refs.description                  = These services all still reference the old github
+pages.ghe-refs.table.col-1                  = Service
+pages.ghe-refs.table.col-2                  = Repository
+pages.ghe-refs.no-refs                      = There are no old github references in Service manager config
+
+pages.running-apps.heading                  = Running applications
+pages.running-apps.form.label               = SM Profile
+pages.running-apps.no-results               = Please search for a profile to view running services (as it appears in config)
+
+pages.available-ports.heading               = Available ports
+pages.available-ports.form.start            = Start port
+pages.available-ports.form.end              = End port
+pages.available-ports.no-ports              = Please search for a port range
+
+pages.potential-conflicts.heading           = Potential conflicts
+pages.potential-conflicts.description       = These sets of services share the same port and could run into problems if they are ran at the same time
+pages.potential-conflicts.table.col-1       = Port
+pages.potential-conflicts.table.col-2       = Services
+pages.potential-conflicts.no-conflicts      = There are no current potential problems in Service manager config
+
+pages.profiles.heading                      = Service manager profiles
+pages.profiles.form.label                   = Profile
+pages.profiles.no-profiles                  = Currently, there are no Service manager profiles
+
+pages.service-details.heading               = Service details for {0}
+pages.service-details.table.template        = Service template
+pages.service-details.table.frontend        = Frontend
+pages.service-details.table.port            = Default port
+pages.service-details.table.git-clone       = Github clone link
+pages.service-details.table.git-link        = Github link
+pages.service-details.table.params          = Parameters
+
+pages.services-in-profile.heading           = Services in the {0} profile
+pages.services-in-profile.no-profiles       = Currently, there are no Service manager profiles
+
+pages.services.heading                      = Service manager services
+pages.services.form.label                   = Service
+pages.services.no-services                  = Currently, there are no services
+
+pages.test-routes-details.heading           = Test routes for {0}
+pages.test-routes-details.table.description = Description
+pages.test-routes-details.table.route       = Test route
+pages.test-routes-details.no-routes         = Currently, there are no defined test routes for {0}
+
+pages.test-routes-overview.heading          = Service test routes
+pages.test-routes-overview.no-services      = Currently, there are no services that have defined test routes
+
+
+
+
+

@@ -1,0 +1,39 @@
+@import views.html.templates.{main_template, ErrorPanel}
+
+@(services: Seq[String], form: Form[String])(implicit messages: Messages)
+
+@main_template(title = messages("app.tab-title")) {
+    <div class="col-md-9">
+        <h2>@messages("pages.services.heading")</h2>
+        <hr>
+        <form class="form-inline" action="@routes.MainController.submitCurrentServices()" method="post">
+            <div class="form-group">
+                <div class="input-group @if(form.hasErrors) { has-error }">
+                    <span class="input-group-addon" id="sizing-addon1">@messages("pages.services.form.label")</span>
+                    <input id="service" name="service" type="text" class="form-control" aria-describedby="sizing-addon1" value="@form("service").value">
+                </div>
+            </div>
+            <button type="submit" class="btn btn-primary"><span class="glyphicon glyphicon-th-list" aria-hidden="true"></span> @messages("app.search")</button>
+        </form>
+        @if(form.hasErrors) {
+            <hr>
+            @ErrorPanel(form)
+        }
+        <hr>
+        <div class="row">
+        @if(services.nonEmpty) {
+            @for(service <- services) {
+                <div class="col-md-6">
+                    <div class="alert alert-info text-center lead">
+                        <a href="@routes.MainController.detailsForService(service)">
+                            <strong>@service</strong>
+                        </a>
+                    </div>
+                </div>
+            }
+        } else {
+            <p class="text-center lead">@messages("pages.services.no-services")</p>
+        }
+        </div>
+    </div>
+}
