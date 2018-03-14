@@ -1,5 +1,4 @@
 @import views.html.templates.{RunningServiceDisplay, main_template, ErrorPanel}
-
 @import common.{RunningResponse, GreenResponse}
 
 @(apps: Seq[(String, RunningResponse)], form: Form[String])(implicit messages: Messages)
@@ -27,6 +26,15 @@
                 <strong class="h1">@runningServices</strong> running services
             </div>
         </div>
+        <form class="form-inline" action="@routes.MainController.submitHome()" method="post">
+            <div class="form-group">
+                <div class="input-group @if(form.hasErrors) { has-error }">
+                    <span class="input-group-addon" id="sizing-addon1">@messages("pages.running-apps.form.label")</span>
+                    <input id="profile" name="profile" type="text" class="form-control" aria-describedby="sizing-addon1" value="@form("profile").value">
+                </div>
+            </div>
+            <button type="submit" class="btn btn-primary"><span class="glyphicon glyphicon-play" aria-hidden="true"></span> @messages("app.search")</button>
+        </form>
         @if(form.hasErrors) {
             <hr>
             @ErrorPanel(form)
