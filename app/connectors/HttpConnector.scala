@@ -17,7 +17,6 @@
 package connectors
 
 import java.net.ConnectException
-import java.util.concurrent.TimeoutException
 
 import common._
 import javax.inject.Inject
@@ -26,7 +25,7 @@ import org.jsoup.nodes.Document
 import play.utils.Colors
 
 import scala.concurrent.ExecutionContext.Implicits.global
-import scala.concurrent.Future
+import scala.concurrent.{Future, TimeoutException}
 
 class DefaultHttpConnector @Inject()(val http: Http) extends HttpConnector
 
