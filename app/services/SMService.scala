@@ -21,6 +21,7 @@ import javax.inject.Inject
 import common.{Logging, RunningResponse}
 import connectors.{HttpConnector, JsonConnector}
 import models.TestRoutesDesc
+import play.api.Configuration
 import play.api.libs.json.{JsObject, JsValue}
 
 import scala.concurrent.ExecutionContext.Implicits.global
@@ -28,7 +29,8 @@ import scala.concurrent.duration._
 import scala.concurrent.{Await, Awaitable, Future}
 
 class DefaultSMService @Inject()(val jsonConnector: JsonConnector,
-                                 val httpConnector: HttpConnector) extends SMService
+                                 val httpConnector: HttpConnector,
+                                 config: Configuration) extends SMService
 
 trait SMService extends Logging {
   val jsonConnector: JsonConnector
@@ -38,22 +40,11 @@ trait SMService extends Logging {
 
   private val portRange = 1025 to 65535
 
-  //TODO: Remove and pass in
-  private val exclusions = Set("MONGO", "RABBITMQ", "NGINX", "REPAYMENTS_BANKREP_SETUP_DATA")
-
-  private def filterServicesWithExclusions(exclude: Boolean = true): Seq[(String, JsValue)] = {
-    if(exclude) {
-      jsonConnector.loadServicesJson.fields.filterNot{case (service, _) => exclusions (service)}
-    } else {
-      jsonConnector.loadServicesJson.fields
-    }
-  }
-
   def getRunningServices(currentProfile: String = ""): Seq[(String, RunningResponse)] = {
     val profile = currentProfile.trim.replace(" ", "_")
     if (profile.isEmpty) { Seq.empty } else {
       jsonConnector.loadProfilesJson.\(profile.toUpperCase).asOpt[Set[String]].fold(Seq.empty[(String, RunningResponse)]) { validServices =>
-        filterServicesWithExclusions(false) collect {
+        jsonConnector.loadServicesJson.fields collect {
           case (name, json) if validServices(name) =>
             val port      = json.\("defaultPort").as[Int]
             val isRunning = json.\("healthcheck").\("url").asOpt[String] match {
@@ -70,8 +61,8 @@ trait SMService extends Logging {
   def getValidPortNumbers(searchedRange: Option[(Int, Int)]): Seq[Int] = {
     searchedRange match {
       case Some((start, end)) =>
-        val currentPorts   = filterServicesWithExclusions() map { case (_, details) => details.\("defaultPort").as[Int] }
-        val availablePorts = portRange.diff(currentPorts).toSet
+        val currentPorts   = jsonConnector.loadServicesJson.fields map { case (_, details) => details.\("defaultPort").asOpt[Int] }
+        val availablePorts = portRange.diff(currentPorts.flatten).toSet
         (start to end).filter(availablePorts)
       case _ => Seq.empty
     }
@@ -90,14 +81,14 @@ trait SMService extends Logging {
   }
 
   def getAllServices: Seq[String] = {
-    filterServicesWithExclusions() map { case (service, _) => service}
+    jsonConnector.loadServicesJson.fields map { case (service, _) => service}
   }
 
   def searchForService(query: String): Seq[String]= {
     if(query.contains("\"")) {
-      exactMatchSearch(filterServicesWithExclusions(), query)
+      exactMatchSearch(jsonConnector.loadServicesJson.fields, query)
     } else {
-      filterServicesWithExclusions().collect { case (name, _) if name.contains(query) => name}
+      jsonConnector.loadServicesJson.fields.collect { case (name, _) if name.contains(query) => name}
     }
   }
 
@@ -115,7 +106,7 @@ trait SMService extends Logging {
   }
 
   def getDuplicatePorts: Map[Int, Seq[String]] = {
-    val validServices = filterServicesWithExclusions()
+    val validServices = jsonConnector.loadServicesJson.fields
     val allPorts = validServices.map {
       case(_, js) => js.\("defaultPort").as[Int]
     }
@@ -129,14 +120,14 @@ trait SMService extends Logging {
   }
 
   def getServicesWithDefinedTestRoutes: Seq[String] = {
-    filterServicesWithExclusions() collect {
+    jsonConnector.loadServicesJson.fields collect {
       case (service, js) if js.\("testRoutes").asOpt[JsValue].isDefined => service
     }
   }
 
   def getServicesTestRoutes(service: String): Option[Seq[TestRoutesDesc]] = {
     val details = getDetailsForService(service)
-    filterServicesWithExclusions()
+    jsonConnector.loadServicesJson.fields
       .collect { case (name, js) if name == service => js.\("testRoutes").asOpt[Seq[TestRoutesDesc]] }
       .head
       .map(testRoutes => testRoutes.map { testRoute => testRoute.copy(route = s"http://localhost:${details.\("defaultPort").as[Int]}${testRoute.route}") })
@@ -153,7 +144,7 @@ trait SMService extends Logging {
   }
 
   def getAllGHERefs: Seq[(String, String)] = {
-    filterServicesWithExclusions().collect {
+    jsonConnector.loadServicesJson.fields.collect {
       case (service, js) if js.\("sources").\("repo").as[String].contains("tools") =>
         service -> js.\("sources").\("repo").as[String]
     }

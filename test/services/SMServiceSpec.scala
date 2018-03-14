@@ -75,8 +75,7 @@ class SMServiceSpec extends PlaySpec with MockitoSugar with BeforeAndAfterEach {
           "description" -> "testDesc"
         )
       )
-    ),
-    "RABBITMQ"     -> Json.obj()
+    )
   )
 
   "getRunningServices" should {
