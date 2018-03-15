@@ -22,6 +22,7 @@ import common.{Logging, RunningResponse}
 import connectors.{HttpConnector, JsonConnector}
 import models.TestRoutesDesc
 import play.api.Configuration
+import play.api.libs.functional.Functor
 import play.api.libs.json.{JsObject, JsValue}
 
 import scala.concurrent.ExecutionContext.Implicits.global
@@ -107,6 +108,8 @@ trait SMService extends Logging {
 
   def getDuplicatePorts: Map[Int, Seq[String]] = {
     val validServices = jsonConnector.loadServicesJson.fields
+      .filter(Function.tupled((_, js) => js.\("defaultPort").asOpt[Int].isDefined))
+
     val allPorts = validServices.map {
       case(_, js) => js.\("defaultPort").as[Int]
     }
@@ -144,9 +147,11 @@ trait SMService extends Logging {
   }
 
   def getAllGHERefs: Seq[(String, String)] = {
-    jsonConnector.loadServicesJson.fields.collect {
-      case (service, js) if js.\("sources").\("repo").as[String].contains("tools") =>
-        service -> js.\("sources").\("repo").as[String]
-    }
+    jsonConnector.loadServicesJson.fields
+      .filter(Function.tupled((_, js) => js.\("sources").asOpt[JsObject].isDefined))
+      .collect {
+        case (service, js) if js.\("sources").\("repo").as[String].contains("tools") =>
+          service -> js.\("sources").\("repo").as[String]
+      }
   }
 }

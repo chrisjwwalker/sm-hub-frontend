@@ -26,7 +26,7 @@ side-bar.running-services                   = Running services
 side-bar.profiles                           = Profiles
 side-bar.services                           = Services
 side-bar.available-ports                    = Available ports
-side-bar.conflicts                          = Potential conflicts
+side-bar.conflicts                          = Potential port conflicts
 side-bar.test-routes                        = Service test routes
 side-bar.assets                             = Assets versions
 side-bar.github                             = Old GitHub references
@@ -54,7 +54,7 @@ pages.ghe-refs.table.col-1                  = Service
 pages.ghe-refs.table.col-2                  = Repository
 pages.ghe-refs.no-refs                      = There are no old github references in Service manager config
 
-pages.running-apps.heading                  = Running applications
+pages.running-apps.heading                  = Running services
 pages.running-apps.form.label               = SM Profile
 pages.running-apps.no-results               = Please search for a profile to view running services (as it appears in config)
 
@@ -63,7 +63,7 @@ pages.available-ports.form.start            = Start port
 pages.available-ports.form.end              = End port
 pages.available-ports.no-ports              = Please search for a port range
 
-pages.potential-conflicts.heading           = Potential conflicts
+pages.potential-conflicts.heading           = Potential port conflicts
 pages.potential-conflicts.description       = These sets of services share the same port and could run into problems if they are ran at the same time
 pages.potential-conflicts.table.col-1       = Port
 pages.potential-conflicts.table.col-2       = Services
