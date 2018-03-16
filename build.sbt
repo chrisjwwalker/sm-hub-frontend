@@ -34,8 +34,8 @@ lazy val frontend = Project(appName, file("."))
     resolvers           +=  "scalaz-bintray" at "https://dl.bintray.com/scalaz/releases",
     libraryDependencies ++= Seq(
       ws,
-      "org.jsoup"              %  "jsoup"              % "1.11.1",
-      "org.jsoup"              %  "jsoup"              % "1.11.1" % Test,
+      "org.jsoup"              %  "jsoup"              % "1.11.2",
+      "org.jsoup"              %  "jsoup"              % "1.11.2" % Test,
       "org.scalatestplus.play" %% "scalatestplus-play" % "2.0.1"  % Test,
       "org.mockito"            %  "mockito-core"       % "2.13.0" % Test
     )
