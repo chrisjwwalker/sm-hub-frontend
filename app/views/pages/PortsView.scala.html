@@ -41,8 +41,14 @@
                     <input id="endPort" name="endPort" type="text" class="form-control" aria-describedby="sizing-addon1" value="@form("endPort").value">
                 </div>
             </div>
+
             <button type="submit" class="btn btn-primary"><span class="glyphicon glyphicon-plane" aria-hidden="true"></span> @messages("app.search")</button>
         </form>
+
+        <div class="col-md-3">
+            <strong class="h1">@ports.size</strong> ports in range
+        </div>
+        <hr>
         @if(form.hasErrors) {
             <hr>
             @ErrorPanel(form)

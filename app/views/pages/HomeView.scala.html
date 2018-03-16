@@ -33,7 +33,10 @@
                     <input id="profile" name="profile" type="text" class="form-control" aria-describedby="sizing-addon1" value="@form("profile").value">
                 </div>
             </div>
-            <button type="submit" class="btn btn-primary"><span class="glyphicon glyphicon-play" aria-hidden="true"></span> @messages("app.search")</button>
+
+            <div class="col-md-3">
+                <strong class="h1">@runningServices</strong> running services
+            </div>
         </form>
         @if(form.hasErrors) {
             <hr>

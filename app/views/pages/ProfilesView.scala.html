@@ -30,7 +30,10 @@
                     <input id="profiles" name="profiles" type="text" class="form-control" aria-describedby="sizing-addon1" value="@form("profile").value">
                 </div>
             </div>
-            <button type="submit" class="btn btn-primary"><span class="glyphicon glyphicon-th" aria-hidden="true"></span> @messages("app.search")</button>
+
+            <div class="col-md-3">
+                <strong class="h1">@profiles.size</strong> available profiles
+            </div>
         </form>
         @if(form.hasErrors) {
             <hr>
