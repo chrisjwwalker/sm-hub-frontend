@@ -70,7 +70,7 @@ class HttpConnectorSpec extends PlaySpec with MockitoSugar with FutureAwaits wit
           .thenReturn(Future(fakeResponse(OK)))
 
         val result = await(testConnector.pingService("testService", "/test", testPort))
-        result mustBe GreenResponse
+        result mustBe GreenResponse("testService",testPort)
       }
     }
 
@@ -80,7 +80,7 @@ class HttpConnectorSpec extends PlaySpec with MockitoSugar with FutureAwaits wit
           .thenReturn(Future.failed(new ConnectException()))
 
         val result = await(testConnector.pingService("testService", "/test", testPort))
-        result mustBe RedResponse
+        result mustBe RedResponse("testService", testPort)
       }
 
       "the status code was anything other than an OK" in {
@@ -88,7 +88,7 @@ class HttpConnectorSpec extends PlaySpec with MockitoSugar with FutureAwaits wit
           .thenReturn(Future(fakeResponse(INS)))
 
         val result = await(testConnector.pingService("testService", "/test", testPort))
-        result mustBe RedResponse
+        result mustBe RedResponse("testService",testPort)
       }
     }
 
@@ -98,7 +98,7 @@ class HttpConnectorSpec extends PlaySpec with MockitoSugar with FutureAwaits wit
           .thenReturn(Future.failed(new TimeoutException()))
 
         val result = await(testConnector.pingService("testService", "/test", testPort))
-        result mustBe AmberResponse
+        result mustBe AmberResponse("testService",testPort)
       }
     }
   }
