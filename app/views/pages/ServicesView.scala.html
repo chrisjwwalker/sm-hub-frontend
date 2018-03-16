@@ -30,7 +30,10 @@
                     <input id="service" name="service" type="text" class="form-control" aria-describedby="sizing-addon1" value="@form("service").value">
                 </div>
             </div>
-            <button type="submit" class="btn btn-primary"><span class="glyphicon glyphicon-th-list" aria-hidden="true"></span> @messages("app.search")</button>
+
+            <div class="col-md-3">
+                <strong class="h1">@services.size</strong> available services
+            </div>
         </form>
         @if(form.hasErrors) {
             <hr>
