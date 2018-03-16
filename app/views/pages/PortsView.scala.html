@@ -6,20 +6,29 @@
     <div class="col-md-9">
         <h2>@messages("pages.available-ports.heading")</h2>
         <hr>
-        <form class="form-inline" action="@routes.MainController.submitAvailablePorts()" method="post">
-            <div class="form-group">
-                <div class="input-group @if(form.hasErrors) { has-error }">
-                    <span class="input-group-addon" id="sizing-addon1">@messages("pages.available-ports.form.start")</span>
-                    <input id="startPort" name="startPort" type="text" class="form-control" aria-describedby="sizing-addon1" value="@form("startPort").value">
-                </div>
+        <div class="row">
+            <div class="col-md-9">
+                <form class="form-inline" action="@routes.MainController.submitAvailablePorts()" method="post">
+                    <div class="form-group">
+                        <div class="input-group @if(form.hasErrors) { has-error }">
+                            <span class="input-group-addon" id="sizing-addon1">@messages("pages.available-ports.form.start")</span>
+                            <input id="startPort" name="startPort" type="text" class="form-control" aria-describedby="sizing-addon1" value="@form("startPort").value">
+                        </div>
 
-                <div class="input-group @if(form.hasErrors) { has-error }e ">
-                    <span class="input-group-addon" id="sizing-addon1">@messages("pages.available-ports.form.end")</span>
-                    <input id="endPort" name="endPort" type="text" class="form-control" aria-describedby="sizing-addon1" value="@form("endPort").value">
-                </div>
+                        <div class="input-group @if(form.hasErrors) { has-error }e ">
+                            <span class="input-group-addon" id="sizing-addon1">@messages("pages.available-ports.form.end")</span>
+                            <input id="endPort" name="endPort" type="text" class="form-control" aria-describedby="sizing-addon1" value="@form("endPort").value">
+                        </div>
+                    </div>
+                    <button type="submit" class="btn btn-primary"><span class="glyphicon glyphicon-plane" aria-hidden="true"></span> @messages("app.search")</button>
+                </form>
             </div>
-            <button type="submit" class="btn btn-primary"><span class="glyphicon glyphicon-plane" aria-hidden="true"></span> @messages("app.search")</button>
-        </form>
+
+            <div class="col-md-3">
+                <strong class="h1">@ports.size</strong> ports in range
+            </div>
+        </div>
+        <hr>
         @if(form.hasErrors) {
             <hr>
             @ErrorPanel(form)

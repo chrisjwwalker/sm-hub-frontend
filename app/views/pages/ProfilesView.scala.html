@@ -6,15 +6,23 @@
     <div class="col-md-9">
         <h2>@messages("pages.profiles.heading")</h2>
         <hr>
-        <form class="form-inline" action="@routes.MainController.submitCurrentProfiles()" method="post">
-            <div class="form-group">
-                <div class="input-group @if(form.hasErrors) { has-error }">
-                    <span class="input-group-addon" id="sizing-addon1">@messages("pages.profiles.form.label")</span>
-                    <input id="profiles" name="profiles" type="text" class="form-control" aria-describedby="sizing-addon1" value="@form("profile").value">
-                </div>
+        <div class="row">
+            <div class="col-md-9">
+                <form class="form-inline" action="@routes.MainController.submitCurrentProfiles()" method="post">
+                    <div class="form-group">
+                        <div class="input-group @if(form.hasErrors) { has-error }">
+                            <span class="input-group-addon" id="sizing-addon1">@messages("pages.profiles.form.label")</span>
+                            <input id="profiles" name="profiles" type="text" class="form-control" aria-describedby="sizing-addon1" value="@form("profile").value">
+                        </div>
+                    </div>
+                    <button type="submit" class="btn btn-primary"><span class="glyphicon glyphicon-th" aria-hidden="true"></span> @messages("app.search")</button>
+                </form>
             </div>
-            <button type="submit" class="btn btn-primary"><span class="glyphicon glyphicon-th" aria-hidden="true"></span> @messages("app.search")</button>
-        </form>
+
+            <div class="col-md-3">
+                <strong class="h1">@profiles.size</strong> available profiles
+            </div>
+        </div>
         @if(form.hasErrors) {
             <hr>
             @ErrorPanel(form)
