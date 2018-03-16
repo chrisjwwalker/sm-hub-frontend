@@ -1,9 +1,9 @@
 @import views.html.templates.{RunningServiceDisplay, main_template, ErrorPanel}
 @import common.{RunningResponse, GreenResponse}
 
-@(apps: Seq[(String, RunningResponse)], form: Form[String])(implicit messages: Messages)
+@(apps: Seq[RunningResponse], form: Form[String])(implicit messages: Messages)
 
-@runningServices = @{apps.count{ case (_,resp) => resp == GreenResponse }}
+@runningServices = @{apps.count{_.isInstanceOf[GreenResponse]}}
 
 @main_template(title = messages("app.tab-title")) {
     <div class="col-md-9">
@@ -45,8 +45,8 @@
         <hr>
         <div class="row">
         @if(apps.nonEmpty) {
-            @for((service, resp) <- apps) {
-                @RunningServiceDisplay(service, resp)
+            @for(resp <- apps) {
+                @RunningServiceDisplay(resp)
             }
         } else {
             <div class="col-md-12">

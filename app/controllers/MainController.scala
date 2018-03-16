@@ -25,6 +25,7 @@ import services.SMService
 import views.html.pages._
 
 import scala.concurrent.ExecutionContext.Implicits.global
+import scala.concurrent.Future
 
 class DefaultMainController @Inject()(val smService: SMService,
                                       val messagesApi: MessagesApi) extends MainController
@@ -33,15 +34,17 @@ trait MainController extends Controller with I18nSupport {
 
   val smService: SMService
 
-  def home(profile: String): Action[AnyContent] = Action { implicit request =>
-    val apps    = smService.getRunningServices(profile)
-    Ok(HomeView(apps, RunningServicesForm.form.fill(profile)))
+  def home(profile: String): Action[AnyContent] = Action.async { implicit request =>
+  smService.getRunningServices(profile).map(services =>
+    Ok(HomeView(services, RunningServicesForm.form.fill(profile))))
   }
 
-  def submitHome(): Action[AnyContent] = Action { implicit request =>
+  def submitHome(): Action[AnyContent] = Action.async { implicit request =>
     RunningServicesForm.form.bindFromRequest.fold(
-      errors => BadRequest(HomeView(smService.getRunningServices(), errors)),
-      valid  => Redirect(routes.MainController.home(valid))
+      errors =>
+        smService.getRunningServices().map(services => BadRequest(HomeView(services, errors))),
+      valid  =>
+        Future.successful(Redirect(routes.MainController.home(valid)))
     )
   }
 

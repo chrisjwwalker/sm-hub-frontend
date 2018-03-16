@@ -81,11 +81,11 @@ class SMServiceSpec extends PlaySpec with MockitoSugar with BeforeAndAfterEach {
   "getRunningServices" should {
     "return an empty seq" when {
       "no profile is provided" in {
-        assert(testService.getRunningServices().isEmpty)
+        assert(await(testService.getRunningServices()).isEmpty)
       }
 
       "no profile is found" in {
-        assert(testService.getRunningServices(currentProfile = "test-profile-not-found").isEmpty)
+        assert(await(testService.getRunningServices(currentProfile = "test-profile-not-found")).isEmpty)
       }
     }
 
@@ -98,13 +98,13 @@ class SMServiceSpec extends PlaySpec with MockitoSugar with BeforeAndAfterEach {
 
       when(mockHttpConnector.pingService(ArgumentMatchers.any(), ArgumentMatchers.any(), ArgumentMatchers.any()))
         .thenReturn(
-          Future(GreenResponse),
-          Future(AmberResponse),
-          Future(RedResponse)
+          Future(GreenResponse("testService1",1024)),
+          Future(AmberResponse("testService2",1025)),
+          Future(RedResponse("testService",1026))
         )
 
       val result = testService.getRunningServices(currentProfile = "testProfile1")
-      result mustBe Seq("testService1@1024" -> GreenResponse, "testService2@1025" -> AmberResponse, "testService3@1026" -> RedResponse)
+      await(result) mustBe Seq(GreenResponse("testService1",1024),AmberResponse("testService2",1025),RedResponse("testService",1026))
     }
   }
 
