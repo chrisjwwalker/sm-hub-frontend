@@ -23,25 +23,19 @@ import play.api.i18n.Messages
 
 object Validation {
   def requiredText(key: String)(implicit messages: Messages): Mapping[String] = {
-    val textConstraint: Constraint[String] = Constraint("constraints.text")({ required =>
-      val errors = required match {
-        case "" => Seq(ValidationError(messages(s"validation.required.$key")))
-        case _  => Nil
-      }
-      if(errors.isEmpty) Valid else Invalid(errors)
-    })
+    val textConstraint: Constraint[String] = Constraint("constraints.text"){
+        case "" => Invalid(ValidationError(messages(s"validation.required.$key")))
+        case _  => Valid
+    }
     text.verifying(textConstraint)
   }
 
   def requiredNumber(key: String, min: Int, max: Int)(implicit messages: Messages): Mapping[Int] = {
-    val numberConstraint: Constraint[Int] = Constraint("constraints.number")({ number =>
-      val errors = number match {
-        case num if num < min | num > max => Seq(ValidationError(messages("validation.required.port", key)))
-        case num if num.toString == null  => Seq(ValidationError(messages("validation.required.port.empty", key)))
-        case _                            => Nil
-      }
-      if(errors.isEmpty) Valid else Invalid(errors)
-    })
+    val numberConstraint: Constraint[Int] = Constraint("constraints.number"){
+        case num if num < min | num > max => Invalid(ValidationError(messages("validation.required.port", key)))
+        case num if num.toString == null  => Invalid(ValidationError(messages("validation.required.port.empty", key)))
+        case _                            => Valid
+    }
     number.verifying(numberConstraint)
   }
 }
