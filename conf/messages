@@ -26,15 +26,7 @@ side-bar.running-services                   = Running services
 side-bar.profiles                           = Profiles
 side-bar.services                           = Services
 side-bar.available-ports                    = Available ports
-<<<<<<< HEAD
-<<<<<<< HEAD
 side-bar.conflicts                          = Potential port conflicts
-=======
-side-bar.conflicts                          = Potential conflicts
->>>>>>> running services, searching, ports, GHE, AF, test routes
-=======
-side-bar.conflicts                          = Potential port conflicts
->>>>>>> Fix to cater for exclusions
 side-bar.test-routes                        = Service test routes
 side-bar.assets                             = Assets versions
 side-bar.github                             = Old GitHub references
