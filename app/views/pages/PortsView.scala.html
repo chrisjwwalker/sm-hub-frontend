@@ -1,6 +1,6 @@
 @import views.html.templates.{main_template, ErrorPanel}
 
-@(ports: Seq[Int], form: Form[(Int, Int)])(implicit messages: Messages)
+@(ports: Seq[Int], form: Form[(Int, Int)])(implicit request: RequestHeader, messages: Messages)
 
 @main_template(title = messages("app.tab-title")) {
     <div class="col-md-9">
@@ -15,7 +15,7 @@
                             <input id="startPort" name="startPort" type="text" class="form-control" aria-describedby="sizing-addon1" value="@form("startPort").value">
                         </div>
 
-                        <div class="input-group @if(form.hasErrors) { has-error }e ">
+                        <div class="input-group @if(form.hasErrors) { has-error }">
                             <span class="input-group-addon" id="sizing-addon1">@messages("pages.available-ports.form.end")</span>
                             <input id="endPort" name="endPort" type="text" class="form-control" aria-describedby="sizing-addon1" value="@form("endPort").value">
                         </div>
@@ -24,11 +24,10 @@
                 </form>
             </div>
 
-            <div class="col-md-3">
+            <div id="result-count" class="col-md-3">
                 <strong class="h1">@ports.size</strong> ports in range
             </div>
         </div>
-        <hr>
         @if(form.hasErrors) {
             <hr>
             @ErrorPanel(form)
@@ -38,8 +37,8 @@
         @if(ports.nonEmpty) {
             @for(port <- ports) {
                 <div class="col-md-2">
-                    <div class="alert alert-info" role="alert">
-                        <p class="text-center lead"><strong>@port</strong></p>
+                    <div class="alert alert-info text-center lead" role="alert">
+                        <p class="text-center"><strong>@port</strong></p>
                     </div>
                 </div>
             }

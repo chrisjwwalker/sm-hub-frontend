@@ -1,9 +1,26 @@
-@(title: String)
+@(title: String)(implicit request: RequestHeader)
+
+@theme = @{
+    request.cookies.get("theme") match {
+        case Some(cookie) => cookie.value match {
+            case "dark" => {
+                Html(s"""<link id="theme" rel="stylesheet" media="screen" href="${routes.Assets.at("stylesheets/global-assets-dark-mode.css")}">""")
+            }
+            case "light" => {
+                Html(s"""<link id="theme" rel="stylesheet" media="screen" href="${routes.Assets.at("stylesheets/global-assets.css")}">""")
+            }
+        }
+        case None => {
+            Html(s"""<link id="theme" rel="stylesheet" media="screen" href="${routes.Assets.at("stylesheets/global-assets.css")}">""")
+        }
+    }
+}
 
 <Head>
     <title>@title</title>
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/1/jquery.min.js"></script>
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js" integrity="sha384-0mSbJDEHialfmuBBQP6A4Qrprq5OVfW37PRR3j5ELqxss1yVqOtnepnHVP9aJ7xS" crossorigin="anonymous"></script>
-    <link rel="stylesheet" media="screen" href="@routes.Assets.at("stylesheets/global-assets.css")">
+    <script src="@routes.Assets.at("js/dark-mode.js")"></script>
+    @theme
     <meta name="viewport" content="width=device-width, initial-scale=1">
 </Head>

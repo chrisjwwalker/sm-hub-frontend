@@ -36,6 +36,7 @@ trait ErrorHandler extends HttpErrorHandler with I18nSupport {
 
   override def onClientError(request: RequestHeader, statusCode: Int, message: String): Future[Result] = {
     logger.error(s"[ErrorHandler] - [onClientError] - Url: ${request.uri}, status code: $statusCode")
+    implicit val rh: RequestHeader = request
     statusCode match {
       case NOT_FOUND  => Future.successful(NotFound(NotFoundView()))
       case _          => Future.successful(Status(statusCode)(StandardErrorView()))
@@ -44,6 +45,7 @@ trait ErrorHandler extends HttpErrorHandler with I18nSupport {
 
   override def onServerError(request: RequestHeader, exception: Throwable): Future[Result] = {
     logger.error(s"[ErrorHandler] - [onServerError] - exception : $exception")
+    implicit val rh: RequestHeader = request
     exception.printStackTrace()
     Future.successful(InternalServerError(StandardErrorView()))
   }

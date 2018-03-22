@@ -3,8 +3,10 @@
 # ~~~~
 
 # Home page
-GET     /                           controllers.MainController.home(profile ?= "")
-POST    /                           controllers.MainController.submitHome()
+GET     /                           controllers.MainController.redirectToRunningServices()
+
+GET     /running-services           controllers.MainController.home(profile ?= "")
+POST    /running-services           controllers.MainController.submitHome()
 
 GET     /available-ports            controllers.MainController.availablePorts()
 POST    /available-ports            controllers.MainController.submitAvailablePorts()

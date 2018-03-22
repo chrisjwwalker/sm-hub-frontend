@@ -1,12 +1,14 @@
 @import views.html.templates.main_template
 
-@(servicesWithTestRoutes: Seq[String])(implicit messages: Messages)
+@(servicesWithTestRoutes: Seq[String])(implicit request: RequestHeader, messages: Messages)
 
 @main_template(title = messages("app.tab-title")) {
     <div class="col-md-9">
         <h2>@messages("pages.test-routes-overview.heading")</h2>
         <hr>
-        <strong class="h1">@servicesWithTestRoutes.size</strong> service with defined test routes
+        <div id="result-count">
+            <strong class="h1">@servicesWithTestRoutes.size</strong> service with defined test routes
+        </div>
         <hr>
         <div class="row">
         @if(servicesWithTestRoutes.nonEmpty) {

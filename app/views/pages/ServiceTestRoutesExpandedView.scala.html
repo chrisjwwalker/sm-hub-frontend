@@ -1,7 +1,7 @@
 @import views.html.templates.main_template
 
 
-@(service: String, servicesTestRoutes: Option[Seq[TestRoutesDesc]])(implicit messages: Messages)
+@(service: String, servicesTestRoutes: Option[Seq[TestRoutesDesc]])(implicit request: RequestHeader, messages: Messages)
 
 @main_template(title = messages("app.tab-title")) {
     <div class="col-md-9">
@@ -19,13 +19,13 @@
                     </thead>
                     <tbody>
                         <tr>
-                            <td>@messages("pages.test-routes-details.table.description")</td>
-                            <td>@testRoute.description</td>
+                            <td id="td">@messages("pages.test-routes-details.table.description")</td>
+                            <td id="td">@testRoute.description</td>
                         </tr>
 
                         <tr>
-                            <td>@messages("pages.test-routes-details.table.route")</td>
-                            <td>
+                            <td id="td">@messages("pages.test-routes-details.table.route")</td>
+                            <td id="td">
                                 <a href="@testRoute.route">@testRoute.route</a>
                             </td>
                         </tr>

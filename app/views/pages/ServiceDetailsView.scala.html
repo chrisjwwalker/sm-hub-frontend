@@ -2,7 +2,7 @@
 
 @import play.api.libs.json.JsObject
 
-@(details: JsObject)(implicit messages: Messages)
+@(details: JsObject)(implicit request: RequestHeader, messages: Messages)
 
 @gitHubLink = @{
     details.\("sources").\("repo").as[String]
@@ -20,33 +20,33 @@
                 <table class="table table-striped">
                     @if(details.\("template").asOpt[String].isDefined) {
                         <tr>
-                            <td>@messages("pages.service-details.table.template")</td>
-                            <td>@{details.\("template").as[String]}</td>
+                            <td id="td">@messages("pages.service-details.table.template")</td>
+                            <td id="td">@{details.\("template").as[String]}</td>
                         </tr>
                     }
                     @if(details.\("frontend").asOpt[Boolean].isDefined) {
                         <tr>
-                            <td>@messages("pages.service-details.table.frontend")</td>
-                            <td>@{details.\("frontend").as[Boolean]}</td>
+                            <td id="td">@messages("pages.service-details.table.frontend")</td>
+                            <td id="td">@{details.\("frontend").as[Boolean]}</td>
                         </tr>
                     }
                     <tr>
-                        <td>@messages("pages.service-details.table.port")</td>
-                        <td>@{details.\("defaultPort").as[Int]}</td>
+                        <td id="td">@messages("pages.service-details.table.port")</td>
+                        <td id="td">@{details.\("defaultPort").as[Int]}</td>
                     </tr>
                     <tr>
-                        <td>@messages("pages.service-details.table.git-clone")</td>
-                        <td>@{details.\("sources").\("repo").as[String]}</td>
+                        <td id="td">@messages("pages.service-details.table.git-clone")</td>
+                        <td id="td">@{details.\("sources").\("repo").as[String]}</td>
                     </tr>
                     <tr>
-                        <td>@messages("pages.service-details.table.git-link")</td>
-                        <td>
+                        <td id="td">@messages("pages.service-details.table.git-link")</td>
+                        <td id="td">
                             <a href="@gitHubLink">@gitHubLink</a>
                         </td>
                     </tr>
                     <tr>
-                        <td>@messages("pages.service-details.table.params")</td>
-                        <td>
+                        <td id="td">@messages("pages.service-details.table.params")</td>
+                        <td id="td">
                             @for(param <- details.\("binary").\("cmd").as[Seq[String]]) {
                                 <p>@param</p>
                             }

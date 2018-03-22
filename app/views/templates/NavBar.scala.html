@@ -1,6 +1,16 @@
-@()(implicit messages: Messages)
+@()(implicit request: RequestHeader, messages: Messages)
 
-<nav class="navbar navbar-default">
+@theme = @{
+    request.cookies.get("theme") match {
+        case Some(cookie) => cookie.value match {
+            case "dark"  => Html("navbar-inverse")
+            case "light" => Html("navbar-default")
+        }
+        case None => Html("navbar-default")
+    }
+}
+
+<nav id="main-nav" class="navbar @theme">
     <div class="container-fluid">
         <div class="navbar-header">
             <button id="toggle-nav" type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1" aria-expanded="false">
@@ -12,7 +22,6 @@
             <a id="main-home-link" class="navbar-brand" href="@routes.MainController.home()">@messages("nav-bar.brand")</a>
         </div>
 
-            <!-- Collect the nav links, forms, and other content for toggling -->
         <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
             <ul class="nav navbar-nav">
 
@@ -22,11 +31,16 @@
             </div>
             <ul class="nav navbar-nav navbar-right">
                 <li>
-                    <a href="">
+                    <a id="switch-colour-mode">
+                        <span class="glyphicon glyphicon-lamp" aria-hidden="true"></span>
+                    </a>
+                </li>
+                <li>
+                    <a href="@routes.MainController.home()">
                         <span class="glyphicon glyphicon-user" aria-hidden="true"></span> @messages("nav-bar.welcome", System.getProperty("user.name"))
                     </a>
                 </li>
             </ul>
-        </div><!-- /.navbar-collapse -->
-    </div><!-- /.container-fluid -->
+        </div>
+    </div>
 </nav>

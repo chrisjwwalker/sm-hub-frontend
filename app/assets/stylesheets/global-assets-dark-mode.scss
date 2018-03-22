@@ -1,0 +1,196 @@
+/*!
+ * Copyright 2018 HM Revenue & Customs
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
+@import "public/stylesheets/bootstrap.min";
+
+body {
+  background: #333;
+}
+
+h1, h2 {
+  color: invert(#333);
+}
+
+.grey-text {
+  color: invert(#333);
+}
+
+.list-group-item {
+  background: #3f3f3f;
+  border: 1px solid #3f3f3f;
+}
+
+#side-bar {
+  .list-group-item-heading {
+    color: #ccc;
+  }
+
+  .list-group-item-heading:hover {
+    h4 {
+      color: #000000;
+    }
+  }
+
+  .list-group-item:hover {
+    background: #7d7d7d;
+    h4 {
+      color: #000000;
+    }
+  }
+}
+
+#result-count {
+  color: invert(#333);
+}
+
+.input-group-addon {
+  background: #333;
+  color: invert(#333);
+}
+
+.form-control {
+  background: #565656;
+  color: #fff;
+}
+
+.has-error {
+  .input-group-addon {
+    background: #761c19;
+    color: invert(#333);
+  }
+
+  .form-control {
+    background: #565656;
+    color: #fff;
+  }
+}
+
+.panel-danger>.panel-heading {
+  background-color: #761c19;
+  color: #FFFFFF;
+}
+
+#profile-error {
+  color: invert(#333);
+}
+
+#profile-error:hover {
+  background: #333;
+}
+
+#profiles-error {
+  color: invert(#333);
+}
+
+#profiles-error:hover {
+  background: #333;
+}
+
+#service-error {
+  color: invert(#333);
+}
+
+#service-error:hover {
+  background: #333;
+}
+
+#startPort-error {
+  color: invert(#333);
+}
+
+#startPort-error:hover {
+  background: #333;
+}
+
+#endPort-error {
+  color: invert(#333);
+}
+
+#endPort-error:hover {
+  background: #333;
+}
+
+.lead {
+  color: invert(#333);
+}
+
+.btn-primary {
+  color: #000000;
+  background: #7d7d7d;
+  border-color: #000000;
+}
+
+.btn-primary:hover {
+  color: invert(#333);
+  background: invert(#7d7d7d);
+}
+
+#submit-btn:active {
+  color: invert(#333);
+  background: #000000;
+}
+
+.alert-info {
+  background: invert(#333);
+  border-color: #000000;
+  a {
+    color: #333;
+  }
+
+  p {
+    color: #333;
+  }
+}
+
+.alert-success {
+  background: #3c763d;
+  a {
+    color: #000000;
+    font-weight: 700;
+  }
+}
+
+.alert-warn {
+  background: #d58512;
+  a {
+    color: #000000;
+    font-weight: 700;
+  }
+}
+
+.alert-danger {
+  background: #761c19;
+  a {
+    color: #FFFFFF;
+    font-weight: 700;
+  }
+}
+
+table {
+  color: invert(#333);
+}
+
+.table-striped>tbody>tr:nth-of-type(odd) {
+  background: #3f3f3f;
+}
+
+#td {
+  border-top: 1px solid #3f3f3f;
+
+  a {
+    color: invert(#333);
+  }
+}

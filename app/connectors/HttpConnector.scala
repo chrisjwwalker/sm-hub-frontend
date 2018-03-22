@@ -18,9 +18,9 @@ package connectors
 
 import java.net.ConnectException
 import java.util.concurrent.TimeoutException
-import javax.inject.Inject
 
 import common._
+import javax.inject.Inject
 import org.jsoup.Jsoup
 import org.jsoup.nodes.Document
 import play.utils.Colors

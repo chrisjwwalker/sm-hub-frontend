@@ -69,6 +69,14 @@ class MainControllerSpec extends PlaySpec with MockitoSugar with BeforeAndAfterE
 
   mockAllMessages
 
+  "redirectToRunningServices" should {
+    "return a 303" in {
+      val result = testController.redirectToRunningServices()(request)
+      status(result) mustBe SEE_OTHER
+      redirectLocation(result) mustBe Some("/running-services")
+    }
+  }
+
   "home" should {
     "return an OK" in {
       when(mockSMService.getRunningServices(ArgumentMatchers.any()))

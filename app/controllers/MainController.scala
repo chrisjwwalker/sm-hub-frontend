@@ -33,8 +33,12 @@ trait MainController extends Controller with I18nSupport {
 
   val smService: SMService
 
+  def redirectToRunningServices(): Action[AnyContent] = Action { implicit request =>
+    Redirect(routes.MainController.home())
+  }
+
   def home(profile: String): Action[AnyContent] = Action { implicit request =>
-    val apps    = smService.getRunningServices(profile)
+    val apps = smService.getRunningServices(profile)
     Ok(HomeView(apps, RunningServicesForm.form.fill(profile)))
   }
 
