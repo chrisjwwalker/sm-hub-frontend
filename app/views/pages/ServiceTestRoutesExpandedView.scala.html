@@ -1,0 +1,41 @@
+@import views.html.templates.main_template
+
+
+@(service: String, servicesTestRoutes: Option[Seq[TestRoutesDesc]])(implicit messages: Messages)
+
+@main_template(title = messages("app.tab-title")) {
+    <div class="col-md-9">
+        <h2>@messages("pages.test-routes-details.heading", service)</h2>
+        <hr>
+        <div class="row">
+        @if(servicesTestRoutes.nonEmpty) {
+            <div class="table-responsive">
+            @for(testRoute <- servicesTestRoutes.get) {
+                <table class="table table-striped">
+                    <thead>
+                        <tr>
+                            <th>@testRoute.name</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>@messages("pages.test-routes-details.table.description")</td>
+                            <td>@testRoute.description</td>
+                        </tr>
+
+                        <tr>
+                            <td>@messages("pages.test-routes-details.table.route")</td>
+                            <td>
+                                <a href="@testRoute.route">@testRoute.route</a>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            }
+            </div>
+        } else {
+            <p class="text-center lead">@messages("pages.test-routes-details.no-routes", service)</p>
+        }
+        </div>
+    </div>
+}

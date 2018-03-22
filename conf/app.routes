@@ -1,0 +1,27 @@
+# Routes
+# This file defines all application app.routes (Higher priority app.routes first)
+# ~~~~
+
+# Home page
+GET     /                           controllers.MainController.home(profile ?= "")
+POST    /                           controllers.MainController.submitHome()
+
+GET     /available-ports            controllers.MainController.availablePorts()
+POST    /available-ports            controllers.MainController.submitAvailablePorts()
+
+GET     /current-profiles           controllers.MainController.currentProfiles()
+POST    /current-profiles           controllers.MainController.submitCurrentProfiles()
+
+GET     /current-services           controllers.MainController.currentServices()
+POST    /current-services           controllers.MainController.submitCurrentServices()
+
+GET     /services-in-profile        controllers.MainController.servicesInProfile(profile ?= "")
+GET     /service-details            controllers.MainController.detailsForService(service ?= "")
+GET     /potential-conflicts        controllers.MainController.potentialConflicts()
+GET     /test-routes-overview       controllers.MainController.serviceTestRoutes()
+GET     /test-routes-for-service    controllers.MainController.serviceTestRoutesExpanded(service ?= "")
+GET     /assets-versions            controllers.MainController.availableAssetsVersions()
+GET     /find-ghe-references        controllers.MainController.findGHEReferences()
+
+# Map static resources from the /public folder to the /assets URL path
+GET     /assets/*file               controllers.Assets.at(path="/public", file)

@@ -1,0 +1,17 @@
+@(form: Form[_])(implicit messages: Messages)
+
+@if(form.hasErrors) {
+    <div id="user-error-panel" class="panel panel-danger">
+        <div class="panel-heading">
+            <span class="glyphicon glyphicon-exclamation-sign" aria-hidden="true"></span> @messages("error-panel.header")
+        </div>
+
+        <ul class="list-group">
+        @for(error <- form.errors) {
+            @if(error.message.nonEmpty) {
+                <a id="@{error.key}-error" href="#@error.key" class="list-group-item">@error.message</a>
+            }
+        }
+        </ul>
+    </div>
+}

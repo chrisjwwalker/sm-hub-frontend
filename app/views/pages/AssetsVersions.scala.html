@@ -1,0 +1,32 @@
+@import views.html.templates.main_template
+
+@(assetsVersions: List[String])(implicit messages: Messages)
+
+@main_template(title = messages("app.tab-title")) {
+    <div class="col-md-9">
+        <h2>@messages("pages.assets-versions.heading")</h2>
+        <hr>
+        <strong class="h1">@assetsVersions.size</strong> available versions of assets
+        <hr>
+        <div class="row">
+        @if(assetsVersions.nonEmpty) {
+            <ul>
+            @for(version <- assetsVersions) {
+                <div class="col-md-2">
+                    <div class="alert alert-info text-center lead">
+                        <a href="http://localhost:9032/assets/@version">
+                            <strong>@version</strong>
+                        </a>
+                    </div>
+                </div>
+            }
+            </ul>
+        } else {
+            <div class="col-md-12">
+                <p class="text-center lead">@messages("pages.assets-versions.no-versions")</p>
+                <p class="text-center">@messages("pages.assets-versions.is-running")</p>
+            </div>
+        }
+        </div>
+    </div>
+}

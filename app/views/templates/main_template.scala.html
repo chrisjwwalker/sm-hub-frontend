@@ -1,0 +1,24 @@
+@import views.html.templates.{Head, NavBar, SideBar}
+
+@(title: String)(mainContent: Html)(implicit messages: Messages)
+
+<!DOCTYPE html>
+<html>
+    @Head(title)
+
+    <body>
+        @NavBar()
+
+        <div class="top-block-single">
+            <div class="container">
+                <div class="row">
+                    <div class="col-md-3">
+                    @SideBar()
+                    </div>
+
+                    @mainContent
+                </div>
+            </div>
+        </div>
+    </body>
+</html>
