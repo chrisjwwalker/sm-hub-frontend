@@ -16,10 +16,13 @@
 
 package common
 
-import play.api.data.Forms.{number, text}
-import play.api.data.Mapping
+import play.api.data.Forms.text
+import play.api.data.format.Formatter
 import play.api.data.validation.{Constraint, Invalid, Valid, ValidationError}
+import play.api.data.{FormError, Forms, Mapping}
 import play.api.i18n.Messages
+
+import scala.util.{Failure, Success, Try}
 
 object Validation {
   def requiredText(key: String)(implicit messages: Messages): Mapping[String] = {
@@ -30,12 +33,27 @@ object Validation {
     text.verifying(textConstraint)
   }
 
-  def requiredNumber(key: String, min: Int, max: Int)(implicit messages: Messages): Mapping[Int] = {
-    val numberConstraint: Constraint[Int] = Constraint("constraints.number"){
-        case num if num < min | num > max => Invalid(ValidationError(messages("validation.required.port", key)))
-        case num if num.toString == null  => Invalid(ValidationError(messages("validation.required.port.empty", key)))
-        case _                            => Valid
+  private def intFormatter(min: Int, max: Int)(implicit messages: Messages): Formatter[Int] = new Formatter[Int] {
+    override def bind(key: String, data: Map[String, String]): Either[Seq[FormError], Int] = {
+      data.get(key) match {
+        case Some(possibleInt) => Try(possibleInt.toInt) match {
+          case Success(int) => if(int < min | int > max) Left(Seq(FormError(key, messages("validation.required.port")))) else Right(int)
+          case Failure(_)   => Left(Seq(FormError(key, messages("validation.required.port"))))
+        }
+        case None              => Left(Seq(FormError(key, messages("validation.required.port"))))
+      }
     }
-    number.verifying(numberConstraint)
+
+    override def unbind(key: String, value: Int): Map[String, String] = Map(key -> value.toString)
+  }
+
+  def portMapping(implicit messages: Messages): Mapping[Int] = Forms.of[Int](intFormatter(min = 1024, max = 65535))
+
+  def configBuildPort(validPorts: Seq[Int])(implicit messages: Messages): Mapping[Int] = {
+    val numberConstraint: Constraint[Int] = Constraint("constraints.number"){
+      case taken if validPorts.contains(taken) => Invalid(ValidationError(messages("validation.required.port.in-use", taken.toString)))
+      case _                                   => Valid
+    }
+    portMapping.verifying(numberConstraint)
   }
 }

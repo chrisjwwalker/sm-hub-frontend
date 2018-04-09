@@ -68,6 +68,11 @@ trait SMService extends Logging {
     }
   }
 
+  def getInUsePorts: Seq[Int] = {
+    val currentPorts = jsonConnector.loadServicesJson.fields map { case (_, details) => details.\("defaultPort").asOpt[Int] }
+    currentPorts.flatten
+  }
+
   def getAllProfiles: Seq[String] = {
     jsonConnector.loadProfilesJson.fields collect { case (service, _) if service != "ALL" => service }
   }

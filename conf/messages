@@ -30,13 +30,22 @@ side-bar.conflicts                          = Potential port conflicts
 side-bar.test-routes                        = Service test routes
 side-bar.assets                             = Assets versions
 side-bar.github                             = Old GitHub references
+side-bar.config                             = Build config
 
 error-panel.header                          = There was a problem...
 
 validation.required.profile                 = Enter a profile as it appears in config
 validation.required.service                 = Enter a service name
 validation.required.profiles                = Enter a profile
-validation.required.port                    = Enter the {0} port between 1024 and 65535
+validation.required.port                    = Enter a valid port between 1024 and 65535
+validation.required.port-with-key           = Enter a valid {0} port between 1024 and 65535
+validation.required.port.in-use             = Port {0} is already being used by another service
+
+validation.required.serviceName             = Enter a service name
+validation.required.template                = Enter a valid template (play, sbt, dropwizard or spring boot)
+validation.required.groupId                 = Enter the services group Id
+validation.required.nexus                   = Enter the services nexus location
+validation.required.cmd                     = Enter the services commands
 
 pages.errors.not-found.heading              = Sorry...
 pages.errors.not-found.body                 = This page could not be found
@@ -45,31 +54,37 @@ pages.error.standard.heading                = Sorry...
 pages.error.standard.body                   = We''re having technical problems
 
 pages.assets-versions.heading               = Assets Versions
+pages.assets-versions.count                 = available versions of assets
 pages.assets-versions.no-versions           = There no versions of assets frontend available on your system
 pages.assets-versions.is-running            = (Is assets frontend running?)
 
 pages.ghe-refs.heading                      = Old GitHub references
+pages.ghe-refs.count                        = old references
 pages.ghe-refs.description                  = These services all still reference the old github
 pages.ghe-refs.table.col-1                  = Service
 pages.ghe-refs.table.col-2                  = Repository
 pages.ghe-refs.no-refs                      = There are no old github references in Service manager config
 
 pages.running-apps.heading                  = Running services
+pages.running-apps.count                    = running services
 pages.running-apps.form.label               = SM Profile
 pages.running-apps.no-results               = Please search for a profile to view running services (as it appears in config)
 
 pages.available-ports.heading               = Available ports
+pages.available-ports.count                 = ports in range
 pages.available-ports.form.start            = Start port
 pages.available-ports.form.end              = End port
 pages.available-ports.no-ports              = Please search for a port range
 
 pages.potential-conflicts.heading           = Potential port conflicts
+pages.potential-conflicts.count             = potential conflicts
 pages.potential-conflicts.description       = These sets of services share the same port and could run into problems if they are ran at the same time
 pages.potential-conflicts.table.col-1       = Port
 pages.potential-conflicts.table.col-2       = Services
 pages.potential-conflicts.no-conflicts      = There are no current potential problems in Service manager config
 
 pages.profiles.heading                      = Service manager profiles
+pages.profiles.count                        = available profiles
 pages.profiles.form.label                   = Profile
 pages.profiles.no-profiles                  = Currently, there are no Service manager profiles
 
@@ -85,6 +100,7 @@ pages.services-in-profile.heading           = Services in the {0} profile
 pages.services-in-profile.no-profiles       = Currently, there are no Service manager profiles
 
 pages.services.heading                      = Service manager services
+pages.services.count                        = available services
 pages.services.form.label                   = Service
 pages.services.no-services                  = Currently, there are no services
 
@@ -94,7 +110,27 @@ pages.test-routes-details.table.route       = Test route
 pages.test-routes-details.no-routes         = Currently, there are no defined test routes for {0}
 
 pages.test-routes-overview.heading          = Service test routes
+pages.test-routes-overview.count            = service(s) with defined test routes
 pages.test-routes-overview.no-services      = Currently, there are no services that have defined test routes
+
+pages.generate-config.heading               = Build config
+pages.generate-config.form.name             = Service name
+pages.generate-config.form.template         = Template type
+pages.generate-config.form.port             = Default port
+pages.generate-config.form.cmd              = cmd
+pages.generate-config.form.extra-params     = Extra params
+pages.generate-config.form.groupId          = Group Id
+pages.generate-config.form.nexus            = Nexus
+pages.generate-config.form.submit           = Build config
+pages.generate-config.form.yes              = Yes
+pages.generate-config.form.no               = No
+pages.generate-config.form.label.mongo      = Has mongo?
+pages.generate-config.form.label.sources    = Sources
+pages.generate-config.form.label.binary     = Binary
+
+pages.generated-config.heading              = Your new config
+pages.generated-config.info                 = All of this json is completely editable, if anything looks wrong, edit it before copying
+pages.generated-config.copy                 = Copy to clipboard
 
 
 
