@@ -36,27 +36,31 @@ trait SMService extends Logging {
   val jsonConnector: JsonConnector
   val httpConnector: HttpConnector
 
-  private def await[T](future : Awaitable[T]) : T = Await.result(future, 10.seconds)
-
   private val portRange = 1025 to 65535
 
-  def getRunningServices(currentProfile: String = ""): Seq[(String, RunningResponse)] = {
+  def getRunningServices(currentProfile: String = ""): Future[Seq[RunningResponse]] = {
     val profile = currentProfile.trim.replace(" ", "_")
-    if (profile.isEmpty) { Seq.empty } else {
-      jsonConnector.loadProfilesJson.\(profile.toUpperCase).asOpt[Set[String]].fold(Seq.empty[(String, RunningResponse)]) { validServices =>
-        jsonConnector.loadServicesJson.fields collect {
-          case (name, json) if validServices(name) =>
-            val port      = json.\("defaultPort").as[Int]
-            val isRunning = json.\("healthcheck").\("url").asOpt[String] match {
-              case Some(url) => await(httpConnector.pingService(name, url.replace("${port}", port.toString), port))
-              case None      => await(httpConnector.pingService(name, s"http://localhost:$port/ping/ping", port))
-            }
-
-            s"$name@$port" -> isRunning
-        }
+    if (profile.isEmpty) { Future.successful(Seq.empty) } else {
+      jsonConnector.loadProfilesJson.\(profile.toUpperCase).asOpt[Set[String]].fold[Future[Seq[RunningResponse]]](Future.successful(Seq.empty)){
+        validServices =>
+          pingMultipleServices(jsonConnector.loadServicesJson.fields.collect {
+            case (name,json) if validServices(name) =>
+              val port = json.\("defaultPort").as[Int]
+              json.\("healthcheck").\("url").asOpt[String]
+                .fold((name, s"http://localhost:$port/ping/ping", port))(url =>
+                (name, url.replace("${port}", port.toString), port))
+        })
       }
     }
   }
+
+ private def pingMultipleServices(services:Seq[(String,String,Int)]):Future[Seq[RunningResponse]] = {
+  Future.sequence(services.map{ service => {
+    val (name, url, port) = service
+    httpConnector.pingService(name, url, port)
+    }
+  })
+ }
 
   def getValidPortNumbers(searchedRange: Option[(Int, Int)]): Seq[Int] = {
     searchedRange match {

@@ -17,7 +17,6 @@
 package connectors
 
 import java.net.ConnectException
-import java.util.concurrent.TimeoutException
 
 import common._
 import javax.inject.Inject
@@ -26,7 +25,7 @@ import org.jsoup.nodes.Document
 import play.utils.Colors
 
 import scala.concurrent.ExecutionContext.Implicits.global
-import scala.concurrent.Future
+import scala.concurrent.{Future, TimeoutException}
 
 class DefaultHttpConnector @Inject()(val http: Http) extends HttpConnector
 
@@ -39,14 +38,14 @@ trait HttpConnector extends Logging {
 
   def pingService(service: String, url: String, port: Int): Future[RunningResponse] = {
     http.get(url) map { x =>
-      if(x.status == 200) GreenResponse else RedResponse
+      if(x.status == 200) GreenResponse(service,port) else RedResponse(service,port)
     } recover {
       case _: ConnectException =>
         logger.error(s"Could not connect to ${Colors.yellow(service)} on port ${Colors.magenta(port.toString)}")
-        RedResponse
+        RedResponse(service,port)
       case _: TimeoutException =>
         logger.warn(s"Connection to ${Colors.yellow(service)} on port ${Colors.magenta(port.toString)} timed out")
-        AmberResponse
+        AmberResponse(service,port)
     }
   }
 }

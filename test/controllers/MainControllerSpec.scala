@@ -80,7 +80,7 @@ class MainControllerSpec extends PlaySpec with MockitoSugar with BeforeAndAfterE
   "home" should {
     "return an OK" in {
       when(mockSMService.getRunningServices(ArgumentMatchers.any()))
-        .thenReturn(Seq.empty[(String, RunningResponse)])
+        .thenReturn(Future.successful(Seq.empty[RunningResponse]))
 
       val result = testController.home("")(request)
       status(result) mustBe OK
@@ -100,7 +100,7 @@ class MainControllerSpec extends PlaySpec with MockitoSugar with BeforeAndAfterE
     "return a bad request" when {
       "nothing has been put into the form" in {
         when(mockSMService.getRunningServices(ArgumentMatchers.any()))
-          .thenReturn(Seq.empty[(String, RunningResponse)])
+          .thenReturn(Future.successful(Seq.empty[RunningResponse]))
 
         val result = testController.submitHome()(request)
         status(result) mustBe BAD_REQUEST

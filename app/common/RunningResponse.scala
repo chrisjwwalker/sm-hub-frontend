@@ -16,7 +16,10 @@
 
 package common
 
-sealed trait RunningResponse
-case object GreenResponse extends RunningResponse
-case object AmberResponse extends RunningResponse
-case object RedResponse   extends RunningResponse
+sealed trait RunningResponse{
+  val name:String
+  val port: Int
+}
+case class GreenResponse(name:String,port:Int) extends RunningResponse
+case class AmberResponse(name:String,port:Int) extends RunningResponse
+case class RedResponse(name:String,port:Int)   extends RunningResponse
