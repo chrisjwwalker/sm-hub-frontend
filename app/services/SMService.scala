@@ -36,8 +36,6 @@ trait SMService extends Logging {
   val jsonConnector: JsonConnector
   val httpConnector: HttpConnector
 
-  private def await[T](future : Awaitable[T]) : T = Await.result(future, 10.seconds)
-
   private val portRange = 1025 to 65535
 
   def getRunningServices(currentProfile: String = ""): Future[Seq[RunningResponse]] = {

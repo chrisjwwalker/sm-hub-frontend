@@ -39,9 +39,9 @@ trait MainController extends Controller with I18nSupport {
   }
 
   def home(profile: String): Action[AnyContent] = Action.async { implicit request =>
-    smService.getRunningServices(profile).map(services =>
+    smService.getRunningServices(profile).map { services =>
       Ok(HomeView(services, RunningServicesForm.form.fill(profile)))
-    )
+    }
   }
 
   def submitHome(): Action[AnyContent] = Action.async { implicit request =>
