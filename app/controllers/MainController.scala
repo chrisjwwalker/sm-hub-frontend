@@ -16,39 +16,53 @@
 
 package controllers
 
+import java.io.File
 import javax.inject.Inject
 
 import forms.{AllProfilesForm, AllServiceForm, AvailablePortsForm, RunningServicesForm}
+import play.api.Configuration
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, Controller}
 import services.SMService
 import views.html.pages._
 
+import sys.process._
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
 
 class DefaultMainController @Inject()(val smService: SMService,
-                                      val messagesApi: MessagesApi) extends MainController
+                                      val messagesApi: MessagesApi,
+                                      val configuration: Configuration) extends MainController
 
 trait MainController extends Controller with I18nSupport {
 
   val smService: SMService
+  val configuration: Configuration
 
   def redirectToRunningServices(): Action[AnyContent] = Action { implicit request =>
     Redirect(routes.MainController.home())
   }
 
-  def home(profile: String): Action[AnyContent] = Action.async { implicit request =>
+  def home(profile: String, service: String, action: String): Action[AnyContent] = Action.async { implicit request =>
     smService.getRunningServices(profile).map { services =>
+      if (service != "") {
+        serviceAction(service, action)
+      }
       Ok(HomeView(services, RunningServicesForm.form.fill(profile)))
     }
+  }
+
+  def serviceAction(service: String, action: String): Unit = {
+    Process(s"sm --${action} ${service} -f",
+      new File("/"),
+      "WORKSPACE" -> configuration.underlying.getString("workspace")).run
   }
 
   def submitHome(): Action[AnyContent] = Action.async { implicit request =>
     RunningServicesForm.form.bindFromRequest.fold(
       errors =>
         smService.getRunningServices().map(services => BadRequest(HomeView(services, errors))),
-      valid  =>
+      valid =>
         Future.successful(Redirect(routes.MainController.home(valid)))
     )
   }
@@ -61,7 +75,7 @@ trait MainController extends Controller with I18nSupport {
   def submitAvailablePorts(): Action[AnyContent] = Action { implicit request =>
     AvailablePortsForm.form.bindFromRequest.fold(
       errors => BadRequest(PortsView(smService.getValidPortNumbers(None), errors)),
-      valid  => {
+      valid => {
         val ports = smService.getValidPortNumbers(Some(valid))
         Ok(PortsView(ports, AvailablePortsForm.form.fill(valid)))
       }
@@ -76,7 +90,7 @@ trait MainController extends Controller with I18nSupport {
   def submitCurrentProfiles(): Action[AnyContent] = Action { implicit request =>
     AllProfilesForm.form.bindFromRequest.fold(
       errors => BadRequest(ProfilesView(smService.getAllProfiles, errors)),
-      valid  => Ok(ProfilesView(smService.searchForProfile(valid), AllProfilesForm.form.fill(valid)))
+      valid => Ok(ProfilesView(smService.searchForProfile(valid), AllProfilesForm.form.fill(valid)))
     )
   }
 
@@ -88,7 +102,7 @@ trait MainController extends Controller with I18nSupport {
   def submitCurrentServices(): Action[AnyContent] = Action { implicit request =>
     AllServiceForm.form.bindFromRequest.fold(
       errors => BadRequest(ServicesView(smService.getAllServices, errors)),
-      valid  => Ok(ServicesView(smService.searchForService(valid), AllServiceForm.form.fill(valid)))
+      valid => Ok(ServicesView(smService.searchForService(valid), AllServiceForm.form.fill(valid)))
     )
   }
 

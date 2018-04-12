@@ -27,6 +27,7 @@ import org.mockito.Mockito.{reset, when}
 import org.mockito.ArgumentMatchers
 import org.mockito.stubbing.OngoingStubbing
 import org.scalatest.BeforeAndAfterEach
+import play.api.Configuration
 import play.api.i18n.{Lang, Messages, MessagesApi}
 import play.api.libs.json.Json
 import play.api.mvc.RequestHeader
@@ -38,12 +39,14 @@ class MainControllerSpec extends PlaySpec with MockitoSugar with BeforeAndAfterE
 
   val mockSMService   = mock[SMService]
   val mockMessagesApi = mock[MessagesApi]
+  val mockConfiguration   = mock [Configuration]
 
   val request = FakeRequest()
 
   val testController = new MainController {
-    override def messagesApi = mockMessagesApi
-    override val smService   = mockSMService
+    override def messagesApi   = mockMessagesApi
+    override val smService     = mockSMService
+    override val configuration = mockConfiguration
   }
 
   val lang = Lang("en")
@@ -82,7 +85,7 @@ class MainControllerSpec extends PlaySpec with MockitoSugar with BeforeAndAfterE
       when(mockSMService.getRunningServices(ArgumentMatchers.any()))
         .thenReturn(Future.successful(Seq.empty[RunningResponse]))
 
-      val result = testController.home("")(request)
+      val result = testController.home("", "", "")(request)
       status(result) mustBe OK
     }
   }

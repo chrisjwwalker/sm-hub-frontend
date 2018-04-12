@@ -1,8 +1,8 @@
 @import common.{GreenResponse, AmberResponse, RedResponse, RunningResponse}
 
-@(runningStatus: RunningResponse)
+@(runningStatus: RunningResponse, profile: String)
 
-@evaluateResponse() = {
+    @evaluateResponse() = {
     @runningStatus match {
         case GreenResponse(_,_) => {
             alert-success
@@ -14,12 +14,22 @@
             alert-warn
         }
     }
-}
+    }
 
-<div class="col-md-4">
-    <div id="@{runningStatus.name}-running-response" class="alert @evaluateResponse() text-center" role="alert">
-        <a id="@{runningStatus.name}-details-link" href="@routes.MainController.detailsForService()">
-            @{runningStatus.name} <br> @{runningStatus.port}
-        </a>
+    <div class="col-md-4">
+        <div id="@{runningStatus.name}-running-response" class="alert @evaluateResponse() text-center" role="alert">
+            <a id="@{runningStatus.name}-details-link" href="@routes.MainController.detailsForService()">
+                @{runningStatus.name} <br> @{runningStatus.port}
+            </a>
+            <br><br>
+            <a id="@{runningStatus.name}-start-link" href="@routes.MainController.home(profile, runningStatus.name, "start")">
+                <button title="Start" class="btn btn-primary"><span class="glyphicon glyphicon-play" aria-hidden="true"></span></button>
+            </a>
+            <a id="@{runningStatus.name}-stop-link" href="@routes.MainController.home(profile, runningStatus.name, "stop")">
+                <button title="Stop" class="btn btn-primary"><span class="glyphicon glyphicon-stop" aria-hidden="true"></span></button>
+            </a>
+            <a id="@{runningStatus.name}-restart-link" href="@routes.MainController.home(profile, runningStatus.name, "restart")">
+                <button title="Restart" class="btn btn-primary"><span class="glyphicon glyphicon-refresh" aria-hidden="true"></span></button>
+            </a>
+        </div>
     </div>
-</div>

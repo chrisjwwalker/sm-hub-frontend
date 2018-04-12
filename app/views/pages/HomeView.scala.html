@@ -3,44 +3,44 @@
 
 @(apps: Seq[RunningResponse], form: Form[String])(implicit request: RequestHeader, messages: Messages)
 
-@runningServices = @{apps.count{_.isInstanceOf[GreenResponse]}}
+    @runningServices = @{apps.count{_.isInstanceOf[GreenResponse]}}
 
-@main_template(title = messages("app.tab-title")) {
-    <div class="col-md-9">
-        <h2>@messages("pages.running-apps.heading")</h2>
-        <hr>
-        <div class="row">
-            <div class="col-md-9">
-                <form class="form-inline" action="@routes.MainController.submitHome()" method="post">
-                    <div class="form-group">
-                        <div class="input-group @if(form.hasErrors) { has-error }">
-                            <span class="input-group-addon" id="sizing-addon1">@messages("pages.running-apps.form.label")</span>
-                            <input id="profile" name="profile" type="text" class="form-control" aria-describedby="sizing-addon1" value="@form("profile").value">
-                        </div>
-                    </div>
-                    <button id="submit-btn" type="submit" class="btn btn-primary"><span class="glyphicon glyphicon-play" aria-hidden="true"></span> @messages("app.search")</button>
-                </form>
-            </div>
-
-            <div id="result-count" class="col-md-3">
-                <strong class="h1">@runningServices</strong> running services
-            </div>
-        </div>
-        @if(form.hasErrors) {
+    @main_template(title = messages("app.tab-title")) {
+        <div class="col-md-9">
+            <h2>@messages("pages.running-apps.heading")</h2>
             <hr>
-            @ErrorPanel(form)
-        }
-        <hr>
-        <div class="row">
-        @if(apps.nonEmpty) {
-            @for(resp <- apps) {
-                @RunningServiceDisplay(resp)
-            }
-        } else {
-            <div class="col-md-12">
-                <p class="text-center lead">@messages("pages.running-apps.no-results")</p>
+            <div class="row">
+                <div class="col-md-9">
+                    <form class="form-inline" action="@routes.MainController.submitHome()" method="post">
+                        <div class="form-group">
+                            <div class="input-group @if(form.hasErrors) { has-error }">
+                                <span class="input-group-addon" id="sizing-addon1">@messages("pages.running-apps.form.label")</span>
+                                <input id="profile" name="profile" type="text" class="form-control" aria-describedby="sizing-addon1" value="@form("profile").value">
+                            </div>
+                        </div>
+                        <button id="submit-btn" type="submit" class="btn btn-primary"><span class="glyphicon glyphicon-play" aria-hidden="true"></span> @messages("app.search")</button>
+                    </form>
+                </div>
+
+                <div id="result-count" class="col-md-3">
+                    <strong class="h1">@runningServices</strong> running services
+                </div>
             </div>
-        }
+            @if(form.hasErrors) {
+                <hr>
+                @ErrorPanel(form)
+            }
+            <hr>
+            <div class="row">
+            @if(apps.nonEmpty) {
+                @for(resp <- apps) {
+                    @RunningServiceDisplay(resp, form("profile").value.getOrElse(""))
+                }
+            } else {
+                <div class="col-md-12">
+                    <p class="text-center lead">@messages("pages.running-apps.no-results")</p>
+                </div>
+            }
+            </div>
         </div>
-    </div>
-}
+    }
