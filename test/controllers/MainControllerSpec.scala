@@ -39,7 +39,7 @@ class MainControllerSpec extends PlaySpec with MockitoSugar with BeforeAndAfterE
 
   val mockSMService   = mock[SMService]
   val mockMessagesApi = mock[MessagesApi]
-  val mockConfiguration   = mock [Configuration]
+  val mockConfiguration   = mock[Configuration]
 
   val request = FakeRequest()
 

@@ -6,6 +6,8 @@
     @runningServices = @{apps.count{_.isInstanceOf[GreenResponse]}}
 
     @main_template(title = messages("app.tab-title")) {
+        <meta http-equiv="refresh" content="5"/>
+
         <div class="col-md-9">
             <h2>@messages("pages.running-apps.heading")</h2>
             <hr>

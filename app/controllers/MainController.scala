@@ -45,10 +45,12 @@ trait MainController extends Controller with I18nSupport {
 
   def home(profile: String, service: String, action: String): Action[AnyContent] = Action.async { implicit request =>
     smService.getRunningServices(profile).map { services =>
-      if (service != "") {
+      if (!service.isEmpty && !action.isEmpty) {
         serviceAction(service, action)
+        Redirect(routes.MainController.home(profile))
+      } else {
+        Ok(HomeView(services, RunningServicesForm.form.fill(profile)))
       }
-      Ok(HomeView(services, RunningServicesForm.form.fill(profile)))
     }
   }
 
