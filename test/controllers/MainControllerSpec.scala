@@ -85,7 +85,7 @@ class MainControllerSpec extends PlaySpec with MockitoSugar with BeforeAndAfterE
       when(mockSMService.getRunningServices(ArgumentMatchers.any()))
         .thenReturn(Future.successful(Seq.empty[RunningResponse]))
 
-      val result = testController.home("", "", "")(request)
+      val result = testController.home("", "")(request)
       status(result) mustBe OK
     }
   }

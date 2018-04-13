@@ -43,10 +43,10 @@ trait MainController extends Controller with I18nSupport {
     Redirect(routes.MainController.home())
   }
 
-  def home(profile: String, service: String, action: String): Action[AnyContent] = Action.async { implicit request =>
+  def home(profile: String, serviceAction: String): Action[AnyContent] = Action.async { implicit request =>
     smService.getRunningServices(profile).map { services =>
-      if (!service.isEmpty && !action.isEmpty) {
-        serviceAction(service, action)
+      if (!serviceAction.isEmpty) {
+        doServiceAction(serviceAction)
         Redirect(routes.MainController.home(profile))
       } else {
         Ok(HomeView(services, RunningServicesForm.form.fill(profile)))
@@ -54,8 +54,8 @@ trait MainController extends Controller with I18nSupport {
     }
   }
 
-  def serviceAction(service: String, action: String): Unit = {
-    Process(s"sm --${action} ${service} -f",
+  def doServiceAction(serviceAction: String): Unit = {
+    Process(s"sm --${serviceAction} ${configuration.getString("serviceStartMode").getOrElse("")}",
       new File("/"),
       "WORKSPACE" -> configuration.underlying.getString("workspace")).run
   }

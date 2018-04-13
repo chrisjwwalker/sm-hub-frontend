@@ -22,13 +22,13 @@
                 @{runningStatus.name} <br> @{runningStatus.port}
             </a>
             <br><br>
-            <a id="@{runningStatus.name}-start-link" href="@routes.MainController.home(profile, runningStatus.name, "start")">
+            <a id="@{runningStatus.name}-start-link" href="@routes.MainController.home(profile, "start "+runningStatus.name+" -f")">
                 <button title="Start" class="btn btn-primary"><span class="glyphicon glyphicon-play" aria-hidden="true"></span></button>
             </a>
-            <a id="@{runningStatus.name}-stop-link" href="@routes.MainController.home(profile, runningStatus.name, "stop")">
+            <a id="@{runningStatus.name}-stop-link" href="@routes.MainController.home(profile, "stop "+runningStatus.name)">
                 <button title="Stop" class="btn btn-primary"><span class="glyphicon glyphicon-stop" aria-hidden="true"></span></button>
             </a>
-            <a id="@{runningStatus.name}-restart-link" href="@routes.MainController.home(profile, runningStatus.name, "restart")">
+            <a id="@{runningStatus.name}-restart-link" href="@routes.MainController.home(profile, "restart "+runningStatus.name+" -f")">
                 <button title="Restart" class="btn btn-primary"><span class="glyphicon glyphicon-refresh" aria-hidden="true"></span></button>
             </a>
         </div>
