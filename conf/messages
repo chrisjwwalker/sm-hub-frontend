@@ -57,6 +57,13 @@ pages.ghe-refs.no-refs                      = There are no old github references
 pages.running-apps.heading                  = Running services
 pages.running-apps.form.label               = SM Profile
 pages.running-apps.no-results               = Please search for a profile to view running services (as it appears in config)
+pages.running-apps.start-service            = Start
+pages.running-apps.stop-service             = Stop
+pages.running-apps.restart-service          = Restart
+pages.running-apps.start-all                = Start All
+pages.running-apps.stop-all                 = Stop All
+pages.running-apps.restart-all              = Restart All
+pages.running-apps.refresh                  = Refresh
 
 pages.available-ports.heading               = Available ports
 pages.available-ports.form.start            = Start port

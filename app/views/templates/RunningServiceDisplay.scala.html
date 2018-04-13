@@ -1,6 +1,6 @@
 @import common.{GreenResponse, AmberResponse, RedResponse, RunningResponse}
 
-@(runningStatus: RunningResponse, profile: String)
+@(runningStatus: RunningResponse, profile: String)(implicit messages: Messages)
 
     @evaluateResponse() = {
     @runningStatus match {
@@ -23,13 +23,13 @@
             </a>
             <br><br>
             <a id="@{runningStatus.name}-start-link" href="@routes.MainController.home(profile, "start "+runningStatus.name+" -f")">
-                <button title="Start" class="btn btn-primary"><span class="glyphicon glyphicon-play" aria-hidden="true"></span></button>
+                <button title="@messages("pages.running-apps.start-service")" class="btn btn-primary"><span class="glyphicon glyphicon-play" aria-hidden="true"></span></button>
             </a>
             <a id="@{runningStatus.name}-stop-link" href="@routes.MainController.home(profile, "stop "+runningStatus.name)">
-                <button title="Stop" class="btn btn-primary"><span class="glyphicon glyphicon-stop" aria-hidden="true"></span></button>
+                <button title="@messages("pages.running-apps.stop-service")" class="btn btn-primary"><span class="glyphicon glyphicon-stop" aria-hidden="true"></span></button>
             </a>
             <a id="@{runningStatus.name}-restart-link" href="@routes.MainController.home(profile, "restart "+runningStatus.name+" -f")">
-                <button title="Restart" class="btn btn-primary"><span class="glyphicon glyphicon-refresh" aria-hidden="true"></span></button>
+                <button title="@messages("pages.running-apps.restart-service")" class="btn btn-primary"><span class="glyphicon glyphicon-refresh" aria-hidden="true"></span></button>
             </a>
         </div>
     </div>

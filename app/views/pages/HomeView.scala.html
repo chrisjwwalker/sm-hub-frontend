@@ -37,19 +37,19 @@
             <div class="row">
                 <div class="col-md-9">
                     <a id="start-all-link" href="@routes.MainController.home(form("profile").value.getOrElse(""), "start "+form("profile").value.getOrElse(""))">
-                        <button title="Start All" class="btn btn-primary"><span class="glyphicon glyphicon-play" aria-hidden="true"></span>
-                            Start All</button>
+                        <button title="@messages("pages.running-apps.start-all")" class="btn btn-primary"><span class="glyphicon glyphicon-play" aria-hidden="true"></span>
+                            @messages("pages.running-apps.start-all")</button>
                     </a>
                     <a id="stop-all-link" href="@routes.MainController.home(form("profile").value.getOrElse(""), "stop "+form("profile").value.getOrElse(""))">
-                        <button title="Stop All" class="btn btn-primary"><span class="glyphicon glyphicon-stop" aria-hidden="true"></span>
-                            Stop All</button>
+                        <button title="@messages("pages.running-apps.stop-all")" class="btn btn-primary"><span class="glyphicon glyphicon-stop" aria-hidden="true"></span>
+                            @messages("pages.running-apps.stop-all")</button>
                     </a>
                     <a id="restart-all-link" href="@routes.MainController.home(form("profile").value.getOrElse(""), "restart "+form("profile").value.getOrElse(""))">
-                        <button title="Restart All" class="btn btn-primary"><span class="glyphicon glyphicon-refresh" aria-hidden="true"></span>
-                            Restart All</button>
+                        <button title="@messages("pages.running-apps.restart-all")" class="btn btn-primary"><span class="glyphicon glyphicon-refresh" aria-hidden="true"></span>
+                            @messages("pages.running-apps.restart-all")</button>
                     </a>
-                    <button id="refresh-button" class="btn btn-primary" onclick="document.location.reload(true)"><span class="glyphicon glyphicon-repeat" aria-hidden="true"></span>
-                        Refresh</button>
+                    <button title="@messages("pages.running-apps.refresh")" id="refresh-button" class="btn btn-primary" onclick="document.location.reload(true)"><span class="glyphicon glyphicon-repeat" aria-hidden="true"></span>
+                        @messages("pages.running-apps.refresh")</button>
                     <p>
                 </div>
             </div>
