@@ -25,7 +25,7 @@
             </div>
 
             <div id="result-count" class="col-md-3">
-                <strong class="h1">@ports.size</strong> ports in range
+                <strong class="h1">@{ports.size}</strong> @messages("pages.available-ports.count")
             </div>
         </div>
         @if(form.hasErrors) {

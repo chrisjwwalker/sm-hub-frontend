@@ -1,0 +1,101 @@
+@import views.html.templates.{main_template, ErrorPanel}
+
+@(form: Form[ConfigSetup])(implicit request: RequestHeader, messages: Messages)
+
+@main_template(title = messages("app.tab-title")) {
+    <div class="col-md-9">
+        <h2>@messages("pages.generate-config.heading")</h2>
+        @if(form.hasErrors) {
+            <hr>
+            @ErrorPanel(form)
+        }
+        <hr>
+        <div class="row">
+            <div class="col-md-12">
+                <form action="@routes.MainController.submitGenerateConfig()" method="post">
+                    <div class="form-group">
+                        <div class="input-group @if(form.error("name").isDefined) { has-error }">
+                            <span class="input-group-addon-oversized" id="sizing-addon1">@messages("pages.generate-config.form.name")</span>
+                            <input id="name" name="name" type="text" class="form-control" aria-describedby="sizing-addon1" value="@form("name").value">
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <div class="input-group @if(form.error("template").isDefined) { has-error }">
+                            <span class="input-group-addon-oversized" id="sizing-addon1">@messages("pages.generate-config.form.template")</span>
+                            <input id="template" name="template" type="text" class="form-control" aria-describedby="sizing-addon1" value="@form("template").value">
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <div class="input-group @if(form.error("defaultPort").isDefined) { has-error }">
+                            <span class="input-group-addon-oversized" id="sizing-addon1">@messages("pages.generate-config.form.port")</span>
+                            <input min="1024" max="65535" id="defaultPort" name="defaultPort" type="number" class="form-control" aria-describedby="sizing-addon1" value="@form("defaultPort").value">
+                        </div>
+                    </div>
+
+                    <h4>@messages("pages.generate-config.form.label.mongo")</h4>
+                    <hr>
+                    <div class="form-group form-inline">
+                        <div class="form-group @if(form.error("hasMongo").isDefined){ has-error }">
+                            <input type="radio" name="hasMongo" id="hasMongo-true" value="true" @if(form("hasMongo").value.contains("true")){ checked } />
+                            <label class="radios" for="hasMongo-true">@messages("pages.generate-config.form.yes")</label>
+                        </div>
+
+                        <div class="form-group @if(form.error("hasMongo").isDefined){ has-error }">
+                            <input type="radio" name="hasMongo" id="hasMongo-false" value="false" @if(form("hasMongo").value.contains("false")){ checked } />
+                            <label class="radios" for="hasMongo-false">@messages("pages.generate-config.form.no")</label>
+                        </div>
+                    </div>
+
+                    <h4>@messages("pages.generate-config.form.label.sources")</h4>
+                    <hr>
+                    <div class="form-group">
+                        <div class="input-group @if(form.error("sources.cmd").isDefined) { has-error }">
+                            <span class="input-group-addon-oversized" id="sizing-addon1">@messages("pages.generate-config.form.cmd")</span>
+                            <input id="sources.cmd" name="sources.cmd" type="text" class="form-control" aria-describedby="sizing-addon1" value="@form("sources.cmd").value">
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <div class="input-group @if(form.error("sources.extra_params").isDefined) { has-error }">
+                            <span class="input-group-addon-oversized" id="sizing-addon1">@messages("pages.generate-config.form.extra-params")</span>
+                            <input id="sources.extra_params" name="sources.extra_params" type="text" class="form-control" aria-describedby="sizing-addon1" value="@form("sources.extra_params").value">
+                        </div>
+                    </div>
+
+                    <h4>@messages("pages.generate-config.form.label.binary")</h4>
+                    <hr>
+                    <div class="form-group">
+                        <div class="input-group @if(form.error("binary.groupId").isDefined) { has-error }">
+                            <span class="input-group-addon-oversized" id="sizing-addon1">@messages("pages.generate-config.form.groupId")</span>
+                            <input id="binary.groupId" name="binary.groupId" type="text" class="form-control" aria-describedby="sizing-addon1" value="@form("binary.groupId").value">
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <div class="input-group @if(form.error("binary.nexus").isDefined) { has-error }">
+                            <span class="input-group-addon-oversized" id="sizing-addon1">@messages("pages.generate-config.form.nexus")</span>
+                            <input id="binary.nexus" name="binary.nexus" type="text" class="form-control" aria-describedby="sizing-addon1" value="@form("binary.nexus").value">
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <div class="input-group @if(form.error("binary.cmd").isDefined) { has-error }">
+                            <span class="input-group-addon-oversized" id="sizing-addon1">@messages("pages.generate-config.form.cmd")</span>
+                            <input id="binary.cmd" name="binary.cmd" type="text" class="form-control" aria-describedby="sizing-addon1" value="@form("binary.cmd").value">
+                        </div>
+                    </div>
+
+
+                    <hr>
+                    <div class="form-group">
+                        <div class="input-group">
+                            <button type="submit" class="btn btn-primary"><span class="glyphicon glyphicon-plane" aria-hidden="true"></span> @messages("pages.generate-config.form.submit")</button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+}

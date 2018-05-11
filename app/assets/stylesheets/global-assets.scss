@@ -15,3 +15,25 @@
  */
 
 @import "public/stylesheets/bootstrap.min";
+
+.radios {
+  @extend .btn;
+  @extend .btn-lg;
+  @extend .btn-default;
+}
+
+[type='radio'] {
+  display: none;
+}
+
+[type='radio']:checked + label {
+  @extend .btn;
+  @extend .btn-lg;
+  @extend .btn-success;
+}
+
+.input-group-addon-oversized {
+  @extend .input-group-addon;
+  min-width:150px;
+}
+
