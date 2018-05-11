@@ -1,0 +1,30 @@
+@import views.html.templates.main_template
+
+@(generateConfig: String)(implicit request: RequestHeader, messages: Messages)
+
+@main_template(title = messages("app.tab-title")) {
+    <div class="col-md-9">
+        <h2>@messages("pages.generated-config.heading")</h2>
+        <hr>
+        <p class="text-center grey-text">@messages("pages.generated-config.info")</p>
+        <hr>
+        <div class="row">
+            <div class="col-md-12">
+                <div class="form-group">
+                    <textarea class="codeMirrorAutoSize" id="code" name="code" rows="50">@generateConfig</textarea>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+            $(document).ready(function () {
+                CodeMirror.fromTextArea(document.getElementById("code"), {
+                    lineNumbers: true,
+                    matchBrackets: true,
+                    mode: "javascript",
+                    theme: "monokai"
+                });
+            });
+    </script>
+}

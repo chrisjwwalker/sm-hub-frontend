@@ -126,6 +126,24 @@ class SMServiceSpec extends PlaySpec with MockitoSugar with BeforeAndAfterEach {
     }
   }
 
+  "getInUsePorts" should {
+    "return a populated seq of ports" in {
+      when(mockJsonConnector.loadServicesJson)
+        .thenReturn(servicesJson)
+
+      val result = testService.getInUsePorts
+      result mustBe Seq(1024, 1025, 1026, 1026)
+    }
+
+    "return an empty seq" in {
+      when(mockJsonConnector.loadServicesJson)
+        .thenReturn(Json.obj())
+
+      val result = testService.getInUsePorts
+      result mustBe Seq()
+    }
+  }
+
   "getAllProfiles" should {
     "return a seq of string" in {
       when(mockJsonConnector.loadProfilesJson)

@@ -37,16 +37,17 @@ import scala.concurrent.ExecutionContext.Implicits.global
 
 class MainControllerSpec extends PlaySpec with MockitoSugar with BeforeAndAfterEach {
 
-  val mockSMService   = mock[SMService]
-  val mockMessagesApi = mock[MessagesApi]
-  val mockConfiguration   = mock[Configuration]
+  val mockSMService     = mock[SMService]
+  val mockMessagesApi   = mock[MessagesApi]
+  val mockConfiguration = mock[Configuration]
 
   val request = FakeRequest()
 
   val testController = new MainController {
-    override def messagesApi   = mockMessagesApi
-    override val smService     = mockSMService
     override val configuration = mockConfiguration
+    override val githubOrg     = "testGitHubOrg"
+    override val messagesApi   = mockMessagesApi
+    override val smService     = mockSMService
   }
 
   val lang = Lang("en")
@@ -280,6 +281,44 @@ class MainControllerSpec extends PlaySpec with MockitoSugar with BeforeAndAfterE
 
       val result = testController.findGHEReferences()(request)
       status(result) mustBe OK
+    }
+  }
+
+  "showGenerateConfig" should {
+    "return an Ok" in {
+      when(mockSMService.getInUsePorts)
+        .thenReturn(Seq(1024, 1025, 1026))
+
+      val result = testController.showGenerateConfig()(request)
+      status(result) mustBe OK
+    }
+  }
+
+  "submitGenerateConfig" should {
+    "return an Ok" in {
+      val formRequest = request.withFormUrlEncodedBody(
+        "name"                 -> "testName",
+        "template"             -> "play",
+        "defaultPort"          -> "2015",
+        "hasMongo"             -> "true",
+        "binary.groupId"       -> "testGroupId",
+        "binary.nexus"         -> "testNexus",
+        "binary.cmd"           -> "testCmd"
+      )
+
+      when(mockSMService.getInUsePorts)
+        .thenReturn(Seq(1024, 1025, 1026))
+
+      val result = testController.submitGenerateConfig()(formRequest)
+      status(result) mustBe OK
+    }
+
+    "return a BadRequest" in {
+      when(mockSMService.getInUsePorts)
+        .thenReturn(Seq(1024, 1025, 1026))
+
+      val result = testController.submitGenerateConfig()(request)
+      status(result) mustBe BAD_REQUEST
     }
   }
 }

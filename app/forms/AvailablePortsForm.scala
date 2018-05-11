@@ -24,8 +24,8 @@ import play.api.i18n.Messages
 object AvailablePortsForm {
   def form(implicit messages: Messages): Form[(Int, Int)] = Form(
     tuple(
-      "startPort" -> Validation.requiredNumber(key = "start", min = 1024, max = 65535),
-      "endPort"   -> Validation.requiredNumber(key = "end", min = 1024, max = 65535)
+      "startPort" -> Validation.portMapping,
+      "endPort"   -> Validation.portMapping
     )
   )
 }

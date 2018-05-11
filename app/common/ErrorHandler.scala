@@ -17,13 +17,13 @@
 package common
 
 import javax.inject.Inject
-
 import org.slf4j.{Logger, LoggerFactory}
 import play.api.http.HttpErrorHandler
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{RequestHeader, Result}
 import play.api.mvc.Results._
 import play.api.http.Status.NOT_FOUND
+import play.utils.Colors
 import views.html.errors.{NotFoundView, StandardErrorView}
 
 import scala.concurrent.Future
@@ -35,7 +35,7 @@ trait ErrorHandler extends HttpErrorHandler with I18nSupport {
   val logger: Logger = LoggerFactory.getLogger(getClass)
 
   override def onClientError(request: RequestHeader, statusCode: Int, message: String): Future[Result] = {
-    logger.error(s"[ErrorHandler] - [onClientError] - Url: ${request.uri}, status code: $statusCode")
+    logger.error(s"- [onClientError] ${Colors.yellow(request.method)} request to ${Colors.red(request.uri)} returned a ${Colors.red(statusCode.toString)}")
     implicit val rh: RequestHeader = request
     statusCode match {
       case NOT_FOUND  => Future.successful(NotFound(NotFoundView()))
@@ -44,7 +44,7 @@ trait ErrorHandler extends HttpErrorHandler with I18nSupport {
   }
 
   override def onServerError(request: RequestHeader, exception: Throwable): Future[Result] = {
-    logger.error(s"[ErrorHandler] - [onServerError] - exception : $exception")
+    logger.error(s"- [onServerError] - exception : $exception")
     implicit val rh: RequestHeader = request
     exception.printStackTrace()
     Future.successful(InternalServerError(StandardErrorView()))

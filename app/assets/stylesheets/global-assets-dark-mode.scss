@@ -20,7 +20,7 @@ body {
   background: #333;
 }
 
-h1, h2 {
+h1, h2, h4 {
   color: invert(#333);
 }
 
@@ -194,3 +194,27 @@ table {
     color: invert(#333);
   }
 }
+
+.radios {
+  @extend .btn;
+  @extend .btn-lg;
+  @extend .btn-primary;
+}
+
+[type='radio'] {
+  display: none;
+}
+
+[type='radio']:checked + label {
+  @extend .btn;
+  @extend .btn-lg;
+  @extend .btn-primary;
+  background: #000000;
+  color: #FFFFFF;
+}
+
+.input-group-addon-oversized {
+  @extend .input-group-addon;
+  min-width:150px;
+}
+

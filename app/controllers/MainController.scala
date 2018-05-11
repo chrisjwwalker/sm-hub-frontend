@@ -17,27 +17,33 @@
 package controllers
 
 import java.io.File
-import javax.inject.Inject
 
-import forms.{AllProfilesForm, AllServiceForm, AvailablePortsForm, RunningServicesForm}
+import forms.{AllProfilesForm, AllServiceForm, AvailablePortsForm, RunningServicesForm, _}
+import javax.inject.Inject
+import models.ConfigSetup
 import play.api.Configuration
 import play.api.i18n.{I18nSupport, MessagesApi}
+import play.api.libs.json.Json
 import play.api.mvc.{Action, AnyContent, Controller}
 import services.SMService
 import views.html.pages._
 
-import sys.process._
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
+import scala.sys.process._
 
 class DefaultMainController @Inject()(val smService: SMService,
                                       val messagesApi: MessagesApi,
-                                      val configuration: Configuration) extends MainController
+                                      val configuration: Configuration) extends MainController{
+  override val githubOrg = configuration.underlying.getString("githubOrg")
+}
 
 trait MainController extends Controller with I18nSupport {
 
   val smService: SMService
   val configuration: Configuration
+
+  val githubOrg: String
 
   def redirectToRunningServices(): Action[AnyContent] = Action { implicit request =>
     Redirect(routes.MainController.home())
@@ -142,5 +148,18 @@ trait MainController extends Controller with I18nSupport {
   def findGHEReferences(): Action[AnyContent] = Action { implicit request =>
     val references = smService.getAllGHERefs
     Ok(GHEReferences(references))
+  }
+
+  def showGenerateConfig(): Action[AnyContent] = Action { implicit request =>
+    val validPorts = smService.getInUsePorts
+    Ok(GenerateConfigView(GenerateConfigForm.form(validPorts)))
+  }
+
+  def submitGenerateConfig(): Action[AnyContent] = Action { implicit request =>
+    val validPorts = smService.getInUsePorts
+    GenerateConfigForm.form(validPorts).bindFromRequest.fold(
+      errors => BadRequest(GenerateConfigView(errors)),
+      valid  => Ok(GeneratedConfig(Json.prettyPrint(Json.toJson(valid)(ConfigSetup.writes(githubOrg)))))
+    )
   }
 }
