@@ -7,15 +7,12 @@ How to run
 ==========
 
 ```sbtshell
-sbt run
+sbt -DsmPath=/path/ -Dworkspace=/workspace/ -DgithubOrg=your-github-org-name run
 ```
 
 This will start the application on port **1024**
 
-You also need to provide the path to your service manager config and workspace using a -D arg
-```sbtshell
-sbt -DsmPath=/path/ -Dworkspace=/workspace/ -DgithubOrg=your-github-org-name run
-```
+You also need to provide the path to your service manager config and workspace using a -D args (replace smPath, workspace and githubOrg in the above example)
 
 How to test
 ===========
@@ -33,3 +30,9 @@ Features
 - Catalogue of test routes for services
 - See currently available versions of assets frontend
 - Generate config
+
+License
+=======
+
+This code is open source software licensed under the [Apache 2.0 License]("http://www.apache.org/licenses/LICENSE-2.0.html").
+
